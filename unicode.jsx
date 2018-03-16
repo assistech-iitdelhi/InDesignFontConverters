@@ -1,21 +1,33 @@
-﻿for (var i = 0; i < app.activeDocument.stories.length; i++) {    
-    for (var j = 0; j < app.activeDocument.stories.item(i).paragraphs.length; j++) {
-        var myText = app.activeDocument.stories.item(i).paragraphs.item(j);
+﻿var paragraphs = app.activeDocument.stories.everyItem().paragraphs.everyItem();
+for (var i = 0; i < paragraphs.length; i++) {
+  var myText = paragraphs[i]
+  myText.contents = C2Unic(myText.contents, myText.appliedFont.fontFamily);
+  myText.appliedFont = app.fonts.item("Mangal");
+  //myText.pointSize = myText.pointSize*0.878;
+  myText.composer="Adobe World-Ready Paragraph Composer";
+}
+/*
+for (var j = 0; j < app.activeDocument.stories.length; j++) {    
+    for (var k = 0; k < app.activeDocument.stories.item(j).paragraphs.length; k++) {
+        var myText = app.activeDocument.stories.item(j).paragraphs.item(k);
         myText.contents = C2Unic(myText.contents, myText.appliedFont.fontFamily);
         myText.appliedFont = app.fonts.item("Mangal");
         myText.pointSize = myText.pointSize*0.878;
         myText.composer="Adobe World-Ready Paragraph Composer";
     }
 }
+*/
 
 function C2Unic(text, font) {
     //convert text from font to unicode
-    if (font=="Chanakya")
+    if (font=="Chanakya")        
         return convert_chanakya_to_unicode(text);
     else if (font=="DevLys 010")
         return Devlys2Uni(text);
     else if (font == "Walkman-Chanakya-905")
-        return convert_wchanakya_to_unicode(text)
+        return convert_wchanakya_to_unicode(text);
+    //else
+    //    alert("Unknown font: " + font);
     return "";
 }
 
@@ -491,7 +503,7 @@ function convert_chanakya_to_unicode(legacy_txt) {
     } 
     else  { sthiti2 = text_size  ;  chale_chalo = 0 }
 
-    var modified_substring = legacy_txt.substring ( sthiti1, sthiti2 )  ;
+    var modified_substring = legacy_txt;//.substring ( sthiti1, sthiti2 )  ;
     Replace_Symbols( ) ;
     processed_text += modified_substring ;
     
