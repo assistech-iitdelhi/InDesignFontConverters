@@ -1,14 +1,5 @@
-﻿var paragraphs = app.activeDocument.stories.everyItem().paragraphs.everyItem();
-for (var i = 0; i < paragraphs.length; i++) {
-  var myText = paragraphs[i]
-  myText.contents = C2Unic(myText.contents, myText.appliedFont.fontFamily);
-  myText.appliedFont = app.fonts.item("Mangal");
-  //myText.pointSize = myText.pointSize*0.878;
-  myText.composer="Adobe World-Ready Paragraph Composer";
-}
-/*
-for (var j = 0; j < app.activeDocument.stories.length; j++) {    
-    for (var k = 0; k < app.activeDocument.stories.item(j).paragraphs.length; k++) {
+﻿for (var j = 0; j < app.activeDocument.stories.length; j++) {    
+    for (var k = app.activeDocument.stories.item(j).paragraphs.length-1; k >= 0; k--) {
         var myText = app.activeDocument.stories.item(j).paragraphs.item(k);
         myText.contents = C2Unic(myText.contents, myText.appliedFont.fontFamily);
         myText.appliedFont = app.fonts.item("Mangal");
@@ -16,7 +7,7 @@ for (var j = 0; j < app.activeDocument.stories.length; j++) {
         myText.composer="Adobe World-Ready Paragraph Composer";
     }
 }
-*/
+
 
 function C2Unic(text, font) {
     //convert text from font to unicode
