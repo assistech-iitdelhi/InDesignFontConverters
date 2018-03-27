@@ -1,21 +1,23 @@
-﻿var textStyleRanges = [];
-for (var j = app.activeDocument.stories.length-1; j >= 0 ; j--)
-  for (var k = app.activeDocument.stories.item(j).textStyleRanges.length-1; k >= 0; k--)
-    textStyleRanges.push(app.activeDocument.stories.item(j).textStyleRanges.item(k));
+﻿var textStyleRanges = app.activeDocument.stories.everyItem().textStyleRanges.everyItem().getElements();
 
 for (var i = textStyleRanges.length-1; i >= 0; i--) {
   var myText = textStyleRanges[i];
   var converted = C2Unic(myText.contents, myText.appliedFont.fontFamily);
-  if (myText.contents != converted)
-    myText.contents = converted;        
-
-  if (myText.appliedFont.fontFamily == 'Chanakya' 
-  || myText.appliedFont.fontFamily ==  'DevLys 010' 
-  || myText.appliedFont.fontFamily ==  'Walkman-Chanakya-905') {          
+  //alert(converted);
+  if (converted != undefined) {
+    myText.contents = converted;                 
     myText.appliedFont = app.fonts.item("Utsaah");
-    myText.composer="Adobe World-Ready Paragraph Composer";
+    myText.composer = "Adobe World-Ready Paragraph Composer";
+  } else {
+    //alert(myText.contents + ":" + converted);    
   }
 }
+// Uncommenting this block of text leaves blocks of text at sentence beginning
+app.findTextPreferences = NothingEnum.nothing;
+app.changeTextPreferences = NothingEnum.nothing;
+app.findTextPreferences.appliedFont = "Walkman-Chanakya-905";
+app.changeTextPreferences.appliedFont = "Utsaah";
+app.activeDocument.changeText();
 
 /*
 var myStories = app.activeDocument.stories;
@@ -39,14 +41,13 @@ for (var j = myStories.length-1; j >= 0 ; j--) {
 }*/
 
 function C2Unic(text, font) {
-    //convert text from font to unicode
+    //convert text from font to unicode    
     if (font=="Chanakya")        
         return convert_chanakya_to_unicode(text);
     else if (font=="DevLys 010")
         return Devlys2Uni(text);
     else if (font == "Walkman-Chanakya-905")
         return convert_wchanakya_to_unicode(text);
-    return text;
 }
 
 function convert_wchanakya_to_unicode(legacy_txt) {
@@ -330,8 +331,7 @@ function convert_wchanakya_to_unicode(legacy_txt) {
     else  { sthiti2 = text_size  ;  chale_chalo = 0 }
     //alert(legacy_txt);
     processed_text = processed_text + Replace_Symbols(legacy_txt);
-  }
-  //alert(processed_text);
+  }   
   return processed_text;
   
   function Replace_Symbols(modified_substring)
