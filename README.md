@@ -6,6 +6,12 @@
 3. For CC on Windows 7 the directory is <drivename>:\Users\<username>\AppData\Roaming\Adobe\InDesign\Version 13.0\en_US\Scripts\Scripts Panel
 4. Open the InDesign file and run the script by double clicking on Window > Utilities > Scripts > User > Unicode.jsx 
 
+## AUTHORS
+Initial versions written by Sankalan Pal Chowdhury. 
+
+## THANKS
+Dipendra Manocha for finding javascript based converters.
+
 ## TODO
-1. The converted files do not have markup for Headings/Lists etc as that work is still in progress and could take a few weeks' time. 
+1. The converted files do not have markup for Headings/Lists etc as that work is still in progress 
   
