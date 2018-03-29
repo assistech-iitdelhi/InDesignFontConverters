@@ -7,10 +7,11 @@
 4. Open the InDesign file and run the script by double clicking on Window > Utilities > Scripts > User > Unicode.jsx 
 
 ## AUTHORS
-Initial versions written by Sankalan Pal Chowdhury. 
+Original version written by Sankalan Pal Chowdhury. 
 
 ## THANKS
 Dipendra Manocha for finding javascript based converters.
+Josh Voigts for suggesting fixes for unconverted portions on SO.
 
 ## TODO
 1. The converted files do not have markup for Headings/Lists etc as that work is still in progress 
