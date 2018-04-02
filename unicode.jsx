@@ -12,39 +12,25 @@ for (var i = textStyleRanges.length-1; i >= 0; i--) {
     //alert(myText.contents + ":" + converted);    
   }
 }
-// Uncommenting this block of text leaves blocks of text at sentence beginning
-app.findTextPreferences = NothingEnum.nothing;
-app.changeTextPreferences = NothingEnum.nothing;
-app.findTextPreferences.appliedFont = "Walkman-Chanakya-905";
-app.changeTextPreferences.appliedFont = "Utsaah";
-app.activeDocument.changeText();
 
-/*
-var myStories = app.activeDocument.stories;
-for (var j = myStories.length-1; j >= 0 ; j--) {    
-  var textStyleRanges = myStories.item(j).textStyleRanges;
-  for (var k = textStyleRanges.length-1; k >= 0; k--) {
-      var myText = textStyleRanges.item(k);              
-      var converted = C2Unic(myText.contents, myText.appliedFont.fontFamily);
-      if (myText.contents != converted)
-        myText.contents = converted;        
-  }
-  for (var k = 0; k < textStyleRanges.length; k++) {        
-    var myText = textStyleRanges.item(k);                
-    if (myText.appliedFont.fontFamily == 'Chanakya' 
-    || myText.appliedFont.fontFamily ==  'DevLys 010' 
-    || myText.appliedFont.fontFamily ==  'Walkman-Chanakya-905') {          
-      myText.appliedFont = app.fonts.item("Utsaah");
-      myText.composer="Adobe World-Ready Paragraph Composer";
-    }        
-  }
-}*/
+// Uncommenting this block of text leaves blocks of text at sentence beginning
+for (var i = 0; i < app.activeDocument.fonts.length; i++) {
+    var fontFamily = app.activeDocument.fonts[i].fontFamily;
+    if (fontFamily=="Chanakya"
+        || fontFamily.indexOf("DevLys") == 0 || fontFamily.indexOf("Kruti Dev") == 0
+        || fontFamily == "Walkman-Chanakya-905")    
+    app.findTextPreferences = NothingEnum.nothing;
+    app.changeTextPreferences = NothingEnum.nothing;
+    app.findTextPreferences.appliedFont = fontFamily;
+    app.changeTextPreferences.appliedFont = "Utsaah";
+    app.activeDocument.changeText();
+}
 
 function C2Unic(text, font) {
     //convert text from font to unicode    
     if (font=="Chanakya")        
         return convert_chanakya_to_unicode(text);
-    else if (font=="DevLys 010")
+    else if (font.indexOf("DevLys") == 0 || font.indexOf("Kruti Dev") == 0)
         return Devlys2Uni(text);
     else if (font == "Walkman-Chanakya-905")
         return convert_wchanakya_to_unicode(text);
