@@ -107,27 +107,30 @@ gKasBatchPprocessScripts.ProcessAllInddDocs = function(inddFiles) {
 			gKasBatchPprocessScripts.ProcessDocument(doc);
 			
 			if (gKasBatchPprocessScripts.set.saveOnClosing) {
+            // active book OR documents in selected folder OR documents in selected folder and subfolders
 				if (gKasBatchPprocessScripts.set.rbScope == 2 || gKasBatchPprocessScripts.set.rbScope == 3 || gKasBatchPprocessScripts.set.rbScope == 4) {
 					if (gKasBatchPprocessScripts.GetArrayIndex(gKasBatchPprocessScripts.openDocsList, doc.id) == -1) { // if it wasn't open before running the script, save & close
+                        doc.save(File(inddFile.displayName.replace(/\.pmd$/, ".indd")));
 						doc.close(SaveOptions.YES);
 					}
 					else { // otherwise save and don't close
-						doc.save();
+						doc.save(File(inddFile.displayName.replace(/\.pmd$/, ".indd")));
 					}
 				}
 			}		
 			else {
-				doc.close(SaveOptions.NO);
+                doc.save(File(inddFile.displayName.replace(/\.pmd$/, ".indd")));
+				doc.close();
 			}
 		}  
 		catch(err) {
 			gErrorLog.push(inddFile.name + ": " + err.message + ", line: " + err.line);
 			$.writeln(err.message + ", line: " + err.line);
-			app.scriptPreferences.userInteractionLevel = UserInteractionLevels.INTERACT_WITH_ALL;
+			//HG: app.scriptPreferences.userInteractionLevel = UserInteractionLevels.INTERACT_WITH_ALL;
 		} 
 	} // end For
 
-	app.scriptPreferences.userInteractionLevel = UserInteractionLevels.INTERACT_WITH_ALL;
+	//HG: app.scriptPreferences.userInteractionLevel = UserInteractionLevels.INTERACT_WITH_ALL;
 			
 	progressWin.close();
 }
@@ -174,12 +177,12 @@ gKasBatchPprocessScripts.GetAllInddFiles = function(folder) {
 	fileList = folder.getFiles(),
 	i, file;
 	
-	for (i = 0; i < fileList.length; i++) {
+	for (i = 0; i < 3; i++) { // HG: fileList.length; i++) {
 		file = fileList[i];
 		if (file instanceof Folder && gKasBatchPprocessScripts.set.rbScope == 4) {
 			files = files.concat(gKasBatchPprocessScripts.GetAllInddFiles(file));
 		}
-		else if (file instanceof File && file.name.match(/\.indd$/i) && file.name.match(/^Backup/) == null) {
+		else if (file instanceof File && file.name.match(/\.indd$|\.pmd$/i) && file.name.match(/^Backup/) == null) {
 			files.push(file);
 		}
 	}
