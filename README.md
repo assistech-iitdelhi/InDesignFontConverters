@@ -17,7 +17,8 @@ Original version written by Sankalan Pal Chowdhury.
 1. [Scripting InDesign](http://cssdk.s3-website-us-east-1.amazonaws.com/sdk/1.0/docs/WebHelp/app_notes/id_scripting.htm)
 2. [InDesign Object Model](http://cssdk.s3-website-us-east-1.amazonaws.com/sdk/1.0/docs/WebHelp/app_notes/id_obj_model.htm)
 3. [ScriptUI for Dummies](http://www.kahrel.plus.com/indesign/scriptui.html)
-4. [Batch Processor](http://kasyan.ho.com.ua/batch_process_scripts/batch_process_scripts.html)
+4. [Javascript Tools Guide](http://www.adobe.com/content/dam/acom/en/devnet/scripting/pdfs/javascript_tools_guide.pdf)
+5. [Batch Processor](http://kasyan.ho.com.ua/batch_process_scripts/batch_process_scripts.html)
 
 ## TODO
 1. The converted files do not have markup for Headings/Lists etc as that work is still in progress 
