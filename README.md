@@ -12,7 +12,7 @@ Original version written by Sankalan Pal Chowdhury.
 ## THANKS
 1. Dipendra Manocha for finding javascript based converters.
 2. Josh Voigts for suggesting fixes for unconverted portions on SO [here](https://stackoverflow.com/questions/49429634/indesign-text-modification-script-skips-content) and [here](https://stackoverflow.com/questions/49320918/indesign-text-modification-script-skips-paragraphs)
-3. Kasyan Servetsky's for the (batch processor)[https://forums.adobe.com/message/10286549#10286549]
+3. Kasyan Servetsky's for the [batch processor](https://forums.adobe.com/message/10286549#10286549)
 
 ## RESOURCES
 1. [Scripting InDesign](http://cssdk.s3-website-us-east-1.amazonaws.com/sdk/1.0/docs/WebHelp/app_notes/id_scripting.htm)
