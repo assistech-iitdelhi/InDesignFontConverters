@@ -1,10 +1,12 @@
 # Convert non-unicode InDesign files into Unicode and use the Utsaah font for display. 
 
 ## USAGE
-1. Place the unicode.jsx script in the user's Scripts Panel directory of InDesign
-2. For CS6 on Windows 7 the directory is <drivename>:\Users\<username>\AppData\Roaming\Adobe\InDesign\Version 8.0\en_US\Scripts\Scripts Panel 
-3. For CC on Windows 7 the directory is <drivename>:\Users\<username>\AppData\Roaming\Adobe\InDesign\Version 13.0\en_US\Scripts\Scripts Panel
-4. Open the InDesign file and run the script by double clicking on Window > Utilities > Scripts > User > Unicode.jsx 
+1. Copy jsx scripts in the user's Scripts Panel directory of InDesign
+2. Open an InDesign file and run the script by double clicking on Window > Utilities > Scripts > User > Unicode.jsx 
+
+## BATCH USAGE
+1. Optional: Export pmd files to indd using the pmdimport.jsx
+2. Run unicode.jsx on all indd files inside a folder using Batch processor - 2.2.jsx
 
 ## AUTHORS
 Original version written by Sankalan Pal Chowdhury. 
@@ -12,7 +14,7 @@ Original version written by Sankalan Pal Chowdhury.
 ## THANKS
 1. Dipendra Manocha for finding javascript based converters.
 2. Josh Voigts for suggesting fixes for unconverted portions on SO [here](https://stackoverflow.com/questions/49429634/indesign-text-modification-script-skips-content) and [here](https://stackoverflow.com/questions/49320918/indesign-text-modification-script-skips-paragraphs)
-3. Kasyan Servetsky's for the [batch processor](https://forums.adobe.com/message/10286549#10286549)
+3. Kasyan Servetsky for the [batch processor](https://forums.adobe.com/message/10286549#10286549)
 
 ## RESOURCES
 1. [Scripting InDesign](http://cssdk.s3-website-us-east-1.amazonaws.com/sdk/1.0/docs/WebHelp/app_notes/id_scripting.htm)
