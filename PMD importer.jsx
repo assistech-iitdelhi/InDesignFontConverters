@@ -1,3 +1,23 @@
+﻿//------------------------------------------------------------------------------------------------------------------------------
+//derived from similar function in Kasyan's Batch Processor
+function getAllPMDFiles(folder) {
+	var files = [],
+	fileList = folder.getFiles(),
+	i, file;
+	
+	for (i = 0; i < fileList.length; i++) {
+		file = fileList[i];
+		if (file instanceof Folder) {
+			files = files.concat(getAllPMDFiles(file));
+		}
+		else if (file instanceof File && file.name.match(/\.pmd$/i)) {
+			files.push(file);
+		}
+	}
+
+	return files;
+}
+//--------------------------------------------------------------------------------------------------------------------------------
 // check version
 var myInDesignVersion = Number(String(app.version).split(".")[0]);  
 if (myInDesignVersion < 5 || myInDesignVersion > 8) {  
@@ -8,14 +28,7 @@ if (myInDesignVersion < 5 || myInDesignVersion > 8) {
 // select pmd files  
 var myFolder = Folder.selectDialog("Select a folder with PageMaker files to resave");  
 if (myFolder == null) exit();  
-var myFilelist = [];  
-var myAllFilesList = myFolder.getFiles();  
-for (var f = 0; f < myAllFilesList.length; f++) {  
-    var myFile = myAllFilesList[f];  
-    if (myFile instanceof File && myFile.name.match(/\.pmd$/i)) {  
-        myFilelist.push(myFile);  
-    }  
-}  
+var myFilelist = getAllPMDFiles(myFolder);
 if (myFilelist.length == 0) {  
     alert("No files to open.", "Batch resave PageMaker files script");  
     exit();  
@@ -36,15 +49,17 @@ for (var i = myFilelist.length-1; i >= 0; i--) {
     var myCurrentFile = myFilelist[i];  
     
     try {  
-        var myDoc = app.open(myCurrentFile, false);  
-        var myDocName = myCurrentFile.name.replace(/pmd$/i, "indd");  
-        var myDocFilePath = new File(myFolder.fsName + "/" + myDocName);   
-
         // Progress bar -----------------------------------------------------------------------------------  
         myProgressBar.value = myFilelist.length-i;  
-        myProgressTxt.text = String("Resaving file - " + myDocName + " (" + myProgressBar.value + " of " + myFilelist.length + ")");  
+        myProgressTxt.text = String("Resaving file - " + myCurrentFile + " (" + myProgressBar.value + " of " + myFilelist.length + ")");  
         // Progress bar -----------------------------------------------------------------------------------  
-    
+        
+        var myDocName = myCurrentFile.name.replace(/pmd$/i, "indd");  
+        var myDocFilePath = new File(myCurrentFile.path + "/" + myDocName);  
+        if (myDocFilePath.exists) 
+          continue;
+        
+        var myDoc = app.open(myCurrentFile, false);
         myDoc = myDoc.save(myDocFilePath);  
         myDoc.close();  
     }  

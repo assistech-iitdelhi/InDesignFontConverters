@@ -1,17 +1,36 @@
-﻿var textStyleRanges = app.activeDocument.stories.everyItem().textStyleRanges.everyItem().getElements();
+﻿var stories = app.activeDocument.stories.everyItem().getElements();
+// Progress bar -----------------------------------------------------------------------------------  
+var myProgressWin = new Window ( "window", "Unicode Script "+app.activeDocument.name );  
+var myProgressBar = myProgressWin.add ("progressbar", [12, 12, 350, 24], 0, stories.length);  
+var myProgressTxt = myProgressWin.add("statictext", undefined, "Starting resaving files");  
+myProgressTxt.bounds = [0, 0, 340, 200];  
+myProgressTxt.alignment = "left";  
+myProgressWin.show();  
+// Progress bar ----------------------------------------------------------------------------------- 
 
-for (var i = textStyleRanges.length-1; i >= 0; i--) {
-  var myText = textStyleRanges[i];
-  var converted = C2Unic(myText.contents, myText.appliedFont.fontFamily);
-  //alert(converted);
-  if (converted != undefined) {
-    myText.contents = converted;                 
-    myText.appliedFont = app.fonts.item("Utsaah");
-    myText.composer = "Adobe World-Ready Paragraph Composer";
-  } else {
-    //alert(myText.contents + ":" + converted);    
-  }
+for (var i = 0; i < stories.length; i++) {
+  var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
+  
+  for (var j = textStyleRanges.length-1; j >= 0; j--) {
+    var myText = textStyleRanges[j];
+    var converted = C2Unic(myText.contents, myText.appliedFont.fontFamily);
+    
+    if (converted != undefined) {
+      myText.contents = converted;                 
+      myText.appliedFont = app.fonts.item("Utsaah");
+      myText.composer = "Adobe World-Ready Paragraph Composer";
+    } else {
+      //alert(myText.contents + ":" + converted);    
+    }
+    // Progress bar -----------------------------------------------------------------------------------  
+    myProgressBar.value = i;  
+    myProgressTxt.text = String("Converted story " + (myProgressBar.value+1) + " of " + stories.length + "(" + textStyleRanges.length + " textStyleRanges): " + myText.contents);  
+    // Progress bar -----------------------------------------------------------------------------------      
+  }  
 }
+// Progress bar -----------------------------------------------------------------------------------  
+myProgressWin.close();  
+// Progress bar -----------------------------------------------------------------------------------  
 
 // Uncommenting this block of text leaves blocks of text at sentence beginning
 for (var i = 0; i < app.activeDocument.fonts.length; i++) {
