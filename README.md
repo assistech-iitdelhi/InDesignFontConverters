@@ -14,10 +14,12 @@ Sankalan Pal Chowdhury et al.
 ## MENTORS
 1. Mr. Dipendra Manocha
 2. Prof. M. Balakrishnan
+3. Akashdeep Bansal
 
 ## THANKS
 1. Josh Voigts for suggesting fixes for unconverted portions on SO [here](https://stackoverflow.com/questions/49429634/indesign-text-modification-script-skips-content) and [here](https://stackoverflow.com/questions/49320918/indesign-text-modification-script-skips-paragraphs)
 2. Kasyan Servetsky for the [batch processor](https://forums.adobe.com/message/10286549#10286549)
+3. Abdul Wazid for feedback
 
 ## RESOURCES
 1. [Scripting InDesign](http://cssdk.s3-website-us-east-1.amazonaws.com/sdk/1.0/docs/WebHelp/app_notes/id_scripting.htm)
