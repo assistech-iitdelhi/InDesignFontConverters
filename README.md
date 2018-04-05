@@ -25,3 +25,4 @@ Sankalan Pal Chowdhury et al.
 3. [Adobe InDesign CS6 Object Model](http://jongware.mit.edu/idcs6js/)
 3. [ScriptUI for Dummies](http://www.kahrel.plus.com/indesign/scriptui.html)
 4. [Javascript Tools Guide](http://www.adobe.com/content/dam/acom/en/devnet/scripting/pdfs/javascript_tools_guide.pdf)
+5. [Scientific and Technical Hindi](https://sites.google.com/site/technicalhindi/home/converters)
