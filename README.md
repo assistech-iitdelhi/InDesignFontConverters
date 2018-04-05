@@ -9,7 +9,7 @@
 2. Run unicode.jsx on all indd files inside a folder using Batch processor - 2.2.jsx
 
 ## AUTHORS
-Original version written by Sankalan Pal Chowdhury. 
+Sankalan Pal Chowdhury et al.
 
 ## MENTORS
 1. Mr. Dipendra Manocha
