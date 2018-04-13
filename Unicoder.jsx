@@ -13,15 +13,15 @@ for (var i = 0; i < stories.length; i++) {
   
   for (var j = textStyleRanges.length-1; j >= 0; j--) {
     var myText = textStyleRanges[j];
-    var converted = C2Unic(myText.contents, myText.appliedFont.fontFamily);
+    if (!match(myText.appliedFont.fontFamily))
+      continue;
+    var converted = convert_to_unicode(myText.contents, myText.appliedFont.fontFamily);
     
     if (converted != undefined) {
       myText.contents = converted;                 
       myText.appliedFont = app.fonts.item("Utsaah");
       myText.composer = "Adobe World-Ready Paragraph Composer";
-    } else {
-      //alert(myText.contents + ":" + converted);    
-    }
+    } 
     // Progress bar -----------------------------------------------------------------------------------  
     myProgressBar.value = i;  
     myProgressTxt.text = String("Converted story " + (myProgressBar.value+1) + " of " + stories.length + "(" + textStyleRanges.length + " textStyleRanges): " + myText.contents);  
@@ -32,20 +32,23 @@ for (var i = 0; i < stories.length; i++) {
 myProgressWin.close();  
 // Progress bar -----------------------------------------------------------------------------------  
 
-// Uncommenting this block of text leaves blocks of text at sentence beginning
 for (var i = 0; i < app.activeDocument.fonts.length; i++) {
     var fontFamily = app.activeDocument.fonts[i].fontFamily;
     if (fontFamily=="Chanakya"
         || fontFamily.indexOf("DevLys") == 0 || fontFamily.indexOf("Kruti Dev") == 0
-        || fontFamily == "Walkman-Chanakya-905")    
-    app.findTextPreferences = NothingEnum.nothing;
-    app.changeTextPreferences = NothingEnum.nothing;
-    app.findTextPreferences.appliedFont = fontFamily;
-    app.changeTextPreferences.appliedFont = "Utsaah";
-    app.activeDocument.changeText();
+        || fontFamily == "Walkman-Chanakya-905")     {
+      app.findTextPreferences = NothingEnum.nothing;
+      app.changeTextPreferences = NothingEnum.nothing;
+      app.findTextPreferences.appliedFont = fontFamily;
+      app.changeTextPreferences.appliedFont = "Utsaah";
+      app.activeDocument.changeText();
+    }
 }
 
-function C2Unic(text, font) {
+function matches(fontName) {
+}
+
+function convert_to_unicode(text) {
     //convert text from font to unicode    
     if (font=="Chanakya")        
         return convert_chanakya_to_unicode(text);
