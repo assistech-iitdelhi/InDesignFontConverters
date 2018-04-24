@@ -1,12 +1,12 @@
-# Convert non-unicode InDesign files into Unicode and use the Utsaah font for display. 
+# Convert non-unicode Devanagari text in InDesign files to Unicode and use the Utsaah font for display. 
 
 ## USAGE
 1. Copy jsx scripts in the user's Scripts Panel directory of InDesign
 2. Open an InDesign file and run the script by double clicking on Window > Utilities > Scripts > User > Unicode.jsx 
 
 ## BATCH USAGE
-1. Optional: Export pmd files to indd using the pmdimport.jsx
-2. Run unicode.jsx on all indd files inside a folder using Batch processor - 2.2.jsx
+1. Optional: Export pmd files to indd using the PMDImporter.jsx (Works only in InDesign CS6 or earlier)
+2. Run converters on all indd files inside a folder using Kasyan Servetsky's Batch processor - 2.2.jsx
 
 ## AUTHORS
 Sankalan Pal Chowdhury et al.
@@ -28,3 +28,4 @@ Sankalan Pal Chowdhury et al.
 3. [ScriptUI for Dummies](http://www.kahrel.plus.com/indesign/scriptui.html)
 4. [Javascript Tools Guide](http://www.adobe.com/content/dam/acom/en/devnet/scripting/pdfs/javascript_tools_guide.pdf)
 5. [Scientific and Technical Hindi](https://sites.google.com/site/technicalhindi/home/converters)
+6. [Adobe InDesign CS6 Classroom in a Book](https://www.amazon.in/Adobe-InDesign-CS6-Classroom-Book-ebook/dp/B008679LFO)
