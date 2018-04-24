@@ -1,13 +1,5 @@
 ﻿(function() {
 var stories = app.activeDocument.stories.everyItem().getElements();
-// Progress bar -----------------------------------------------------------------------------------  
-var myProgressWin = new Window ( "window", "Unicode Script "+app.activeDocument.name );  
-var myProgressBar = myProgressWin.add ("progressbar", [12, 12, 350, 24], 0, stories.length);  
-var myProgressTxt = myProgressWin.add("statictext", undefined, "Starting Conversion");  
-myProgressTxt.bounds = [0, 0, 340, 200];  
-myProgressTxt.alignment = "left";  
-myProgressWin.show();  
-// Progress bar ----------------------------------------------------------------------------------- 
 
 for (var i = 0; i < stories.length; i++) {
   var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
@@ -23,15 +15,8 @@ for (var i = 0; i < stories.length; i++) {
       } 
     
     }
-    // Progress bar -----------------------------------------------------------------------------------  
-    myProgressBar.value = i;  
-    myProgressTxt.text = String("Converted story " + (myProgressBar.value+1) + " of " + stories.length + "(" + textStyleRanges.length + " textStyleRanges): " + myText.contents);  
-    // Progress bar -----------------------------------------------------------------------------------      
   }  
 }
-// Progress bar -----------------------------------------------------------------------------------  
-myProgressWin.close();  
-// Progress bar -----------------------------------------------------------------------------------  
 
 for (var i = 0; i < app.activeDocument.fonts.length; i++) {
   var fontFamily = app.activeDocument.fonts[i].fontFamily;
