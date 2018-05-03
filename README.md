@@ -17,9 +17,10 @@ Sankalan Pal Chowdhury et al.
 3. Akashdeep Bansal
 
 ## THANKS
-1. Josh Voigts for suggesting fixes for unconverted portions on SO [here](https://stackoverflow.com/questions/49429634/indesign-text-modification-script-skips-content) and [here](https://stackoverflow.com/questions/49320918/indesign-text-modification-script-skips-paragraphs)
-2. Kasyan Servetsky for the [batch processor](https://forums.adobe.com/message/10286549#10286549)
-3. Abdul Wazid for feedback
+1. [वैज्ञानिक एवं तकनीकी हिन्दी समूह](https://sites.google.com/site/technicalhindi/about/_draft_post) for converters
+2. Josh Voigts for suggesting fixes for unconverted portions on SO [here](https://stackoverflow.com/questions/49429634/indesign-text-modification-script-skips-content) and [here](https://stackoverflow.com/questions/49320918/indesign-text-modification-script-skips-paragraphs)
+3. Kasyan Servetsky for the [batch processor](https://forums.adobe.com/message/10286549#10286549)
+4. Abdul Wazid for feedback
 
 ## RESOURCES
 1. [Scripting InDesign](http://cssdk.s3-website-us-east-1.amazonaws.com/sdk/1.0/docs/WebHelp/app_notes/id_scripting.htm)
