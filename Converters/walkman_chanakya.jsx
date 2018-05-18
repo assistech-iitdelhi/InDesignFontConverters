@@ -45,7 +45,7 @@ for (var i = 0; i < app.activeDocument.fonts.length; i++) {
 }
 })();
 function matches(fontName) {
-  return fontName == "Walkman-Chanakya-905";
+  return fontName.indexOf("Walkman-Chanakya-") == 0;
 }
 
 function convert_to_unicode(legacy_txt) {
