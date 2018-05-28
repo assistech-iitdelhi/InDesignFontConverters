@@ -1,5 +1,22 @@
 ﻿(function() {
 var stories = app.activeDocument.stories.everyItem().getElements();
+//Load mappings from file--------------------------------------------------------------------------
+var targetFont = "Kokila";
+var targetFontScalingFactor = 1.0;
+var fileName = File(app.activeScript.fullName).parent.fsName + "\\mappings.csv";
+var file = new File(fileName)
+file.open("r");
+while(!file.eof){
+    row=file.readln();    
+    cols = row.split(",");
+    if (matches(cols[0])) {
+      targetFont = cols[1];
+      targetFontScalingFactor = cols[2];
+      break;
+    }    
+}
+file.close();
+//Mappings loaded----------------------------------------------------------------------------------
 // Progress bar -----------------------------------------------------------------------------------  
 var myProgressWin = new Window ( "window", "Unicode Script "+app.activeDocument.name );  
 var myProgressBar = myProgressWin.add ("progressbar", [12, 12, 350, 24], 0, stories.length);  
@@ -17,11 +34,11 @@ for (var i = 0; i < stories.length; i++) {
     if (matches(myText.appliedFont.fontFamily)) {
       var converted = convert_to_unicode(myText.contents);
       if (converted != undefined) {
-        myText.contents = converted;                 
-        myText.appliedFont = app.fonts.item("Utsaah");
+        myText.appliedFont = app.fonts.item(targetFont);  
+        myText.pointSize = myText.pointSize*targetFontScalingFactor;                 
+        myText.contents = converted;                         
         myText.composer = "Adobe World-Ready Paragraph Composer";
       } 
-    
     }
     // Progress bar -----------------------------------------------------------------------------------  
     myProgressBar.value = i;  
@@ -39,7 +56,7 @@ for (var i = 0; i < app.activeDocument.fonts.length; i++) {
     app.findTextPreferences = NothingEnum.nothing;
     app.changeTextPreferences = NothingEnum.nothing;
     app.findTextPreferences.appliedFont = fontFamily;
-    app.changeTextPreferences.appliedFont = "Utsaah";
+    app.changeTextPreferences.appliedFont = "Kokila";
     app.activeDocument.changeText();
   }
 }
@@ -232,7 +249,7 @@ function convert_to_unicode(legacy_txt) {
     "È" , "ीं" ,
     "z" , "्र" ,
     "Ì" , "द्द" ,
-    "Í" , "ट्ट" ,
+    "Í" , "ऋ" ,
     "Î" , "ट्ठ" ,
     "Ï" , "ड्ड" ,
     "Ñ" , "कृ" ,
