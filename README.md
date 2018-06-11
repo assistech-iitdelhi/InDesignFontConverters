@@ -30,3 +30,4 @@ Sankalan Pal Chowdhury et al.
 4. [Javascript Tools Guide](http://www.adobe.com/content/dam/acom/en/devnet/scripting/pdfs/javascript_tools_guide.pdf)
 5. [Scientific and Technical Hindi](https://sites.google.com/site/technicalhindi/home/converters)
 6. [Adobe InDesign CS6 Classroom in a Book](https://www.amazon.in/Adobe-InDesign-CS6-Classroom-Book-ebook/dp/B008679LFO)
+7. [InDesign Tutorials](http://www.indesignskills.com/tutorials/)
