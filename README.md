@@ -2,7 +2,7 @@
 
 ## USAGE
 1. Download the repository and copy the folder's contents in the User Scripts Panel directory of InDesign
-2. Open an InDesign file and run the conversion script by double clicking on Window > Utilities > Scripts > User > Converters > <font-name>.jsx 
+2. Open an InDesign file and run the conversion script by double clicking on Window > Utilities > Scripts > User > Converters > \<font-name>.jsx 
 
 ## BATCH USAGE
 1. Optional: Export pmd files to indd using the PMDImporter.jsx (Works only in InDesign CS6 or earlier)
