@@ -1,38 +1,165 @@
 ﻿(function() {
-var stories = app.activeDocument.stories.everyItem().getElements();
-
-for (var i = 0; i < stories.length; i++) {
-  var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
-  
-  for (var j = textStyleRanges.length-1; j >= 0; j--) {
-    var myText = textStyleRanges[j];
-    if (matches(myText.appliedFont.fontFamily)) {
-      var converted = convert_to_unicode(myText.contents);
-      if (converted != undefined) {
-        myText.contents = converted;                 
-        myText.appliedFont = app.fonts.item("Utsaah");
-        myText.composer = "Adobe World-Ready Paragraph Composer";
-      } 
-    
+  var stories = app.activeDocument.stories.everyItem().getElements();
+  //Load mappings from file--------------------------------------------------------------------------
+  var targetFont = "Kokila";
+  var targetFontScalingFactor = 1.07;
+  try {
+      var fileName = File(app.activeScript.fullName).parent.fsName + "\\mappings.csv";
+      var file = new File(fileName)
+      file.open("r");
+      while(!file.eof){
+          row=file.readln();
+          cols = row.split(",");
+          if (matches(cols[0])) {
+            targetFont = cols[1];
+            targetFontScalingFactor = cols[2];
+            break;
+          }
+      }
+      file.close();
+  } catch (err) {
+      alert(err);
+  }
+  //Mappings loaded----------------------------------------------------------------------------------
+  // Progress bar -----------------------------------------------------------------------------------
+  var myProgressWin = new Window ( "window", "Unicode Script "+app.activeDocument.name );
+  var myProgressBar = myProgressWin.add ("progressbar", [12, 12, 350, 24], 0, stories.length);
+  var myProgressTxt = myProgressWin.add("statictext", undefined, "Starting Conversion");
+  myProgressTxt.bounds = [0, 0, 340, 200];
+  myProgressTxt.alignment = "left";
+  myProgressWin.show();
+  // Progress bar -----------------------------------------------------------------------------------
+  if (textSelected()) {
+    convert(app.selection[0], targetFont, targetFontScalingFactor);
+  } else {
+    for (var i = 0; i < stories.length; i++) {
+      var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
+      for (var j = textStyleRanges.length-1; j >= 0; j--) {
+        var myText = textStyleRanges[j];
+        write_to_file(myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
+        if (matches(myText.appliedFont.fontFamily)) {
+          convert(myText, targetFont, targetFontScalingFactor);
+          convertStyle(myText, targetFont, targetFontScalingFactor);
+        }
+        // Progress bar -----------------------------------------------------------------------------------
+        myProgressBar.value = i;
+        myProgressTxt.text = String("Converted story " + (myProgressBar.value+1) + " of " + stories.length + "(" + textStyleRanges.length + " textStyleRanges): " + myText.contents);
+        // Progress bar -----------------------------------------------------------------------------------
+      }         
     }
+    convertParagraphStyles(targetFont, targetFontScalingFactor);
+    convertFont();
+    // Progress bar -----------------------------------------------------------------------------------
+    myProgressWin.close();
+    // Progress bar -----------------------------------------------------------------------------------  
+    
   }  
-}
-
-for (var i = 0; i < app.activeDocument.fonts.length; i++) {
-  var fontFamily = app.activeDocument.fonts[i].fontFamily;
-  if (matches(fontFamily))     {
-    app.findTextPreferences = NothingEnum.nothing;
-    app.changeTextPreferences = NothingEnum.nothing;
-    app.findTextPreferences.appliedFont = fontFamily;
-    app.changeTextPreferences.appliedFont = "Utsaah";
-    app.activeDocument.changeText();
+})();
+function convertParagraphStyles(targetFont, targetFontScalingFactor) {
+	var paraStyles = app.activeDocument.paragraphStyles.everyItem().getElements();
+  // go upto 1 as 0 is the root style and has no properties
+  for (var i = paraStyles.length-1; i > 0; i--) {
+    try {
+      paraStyles[i].composer = "Adobe World-Ready Paragraph Composer";
+    } catch (err) {
+      write_to_file("Failed to set world-ready for " + paraStyles[i].name);
+    }
+    convertStyle(paraStyles[i], targetFont, targetFontScalingFactor);
   }
 }
-})();
+function convert(txt, font, scalingFactor) {
+  var converted = convert_to_unicode(txt.contents);
+  if (converted != undefined) {
+    //txt.pointSize = txt.pointSize*scalingFactor;
+    txt.contents = converted;
+  }
+  return converted;
+}
+
+function convertFont() {
+  for (var i = 0; i < app.activeDocument.fonts.length; i++) {
+    var fontFamily = app.activeDocument.fonts[i].fontFamily;
+    if (matches(fontFamily))     {
+      app.findTextPreferences = NothingEnum.nothing;
+      app.changeTextPreferences = NothingEnum.nothing;
+      app.findTextPreferences.appliedFont = fontFamily;
+      app.changeTextPreferences.appliedFont = "Kokila";
+      app.activeDocument.changeText();
+    }
+  }
+}
+function convertStyle(style, targetFont, scalingFactor) {
+  // change font AFTER checking style name. Otherwise style name will change too soon
+  if (style.fontStyle.indexOf("Bold") >= 0 && style.fontStyle.indexOf("Italic") >= 0) {
+      style.appliedFont = app.fonts.item(targetFont);
+      style.fontStyle = "Bold Italic";
+  } else if (style.fontStyle.indexOf("Bold") >= 0) {
+      style.appliedFont = app.fonts.item(targetFont);
+      style.fontStyle = "Bold";
+  } else if (style.fontStyle.indexOf("Italic") >= 0) {
+      style.appliedFont = app.fonts.item(targetFont);
+      style.fontStyle = "Italic";
+  } else {
+    style.appliedFont = app.fonts.item(targetFont);
+  }
+  if (!isNaN(style.pointSize)) {
+    style.pointSize = Math.round(style.pointSize*scalingFactor);
+  }
+  style.composer  = "Adobe World-Ready Paragraph Composer";
+}
+function textSelected() {
+  if (app.selection.length == 1) {
+    switch (app.selection[0].constructor.name) {
+      case "InsertionPoint":
+      case "Character":
+      case "Word":
+      case "TextStyleRange":
+      case "Line":
+      case "Paragraph":
+      case "TextColumn":
+      case "Text":
+      case "Story":
+        if (app.selection[0].contents.length > 0)
+          return true;
+        else
+          return false;
+        break;
+      default:
+        return false;
+    }
+  } else {
+      return false;
+  }
+}
 function matches(fontName) {
   return fontName == "Chanakya";
 }
-
+function write_to_file(text) {
+  var file = new File("~/Desktop/chanakya.log");
+  file.encoding = "UTF-8";
+  if (file.exists) {
+    file.open("e");
+    file.seek(0, 2);
+  }
+  else {
+    file.open("w");
+  }
+  var d = new Date();
+  file.write(d.toString() + ":" + text + "\n");
+  file.close();
+}
+function write_styles_to_file(textStyleRanges) {
+  write_to_file("********************* BEGIN 2 *********************");
+  for (var k = textStyleRanges.length-1; k >= 0; k--) {
+    var tmpText = textStyleRanges[k];
+    write_to_file(tmpText.appliedFont.fontFamily + ", "
+                  + tmpText.appliedCharacterStyle.name + ", "
+                  + tmpText.appliedParagraphStyle.name + ", "
+                  + tmpText.fontStyle + ", "
+                  + tmpText.contents);
+  }
+  write_to_file("*********************** END 2 **********************");
+}
 function convert_to_unicode(legacy_txt) {
   var array_one = new Array(
     '\xf8',
@@ -159,6 +286,7 @@ function convert_to_unicode(legacy_txt) {
   return processed_text;
   function Replace_Symbols( )
   {
+    write_to_file("Replace_Symbols(" + modified_substring + ") = ");
     //substitute array_two elements in place of corresponding array_one elements
     if ( modified_substring != "" )  // if string to be converted is non-blank then no need of any processing.
     {
@@ -226,6 +354,7 @@ function convert_to_unicode(legacy_txt) {
         modified_substring = modified_substring.replace( charecter_to_be_replaced , new_replacement_string ) ;
         position_of_Z = modified_substring.indexOf( "ü" ) ;
       }// end of while-04
+      write_to_file(modified_substring);
     }//end of IF  statement  meant to  supress processing of  blank  string.
   } // end of the function  Replace_Symbols
 } // end of convert_Chanakya_to_Unicode()

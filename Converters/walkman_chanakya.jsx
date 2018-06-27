@@ -1,56 +1,111 @@
 ﻿(function() {
-var stories = app.activeDocument.stories.everyItem().getElements();
-//Load mappings from file--------------------------------------------------------------------------
-var targetFont = "Kokila";
-var targetFontScalingFactor = 1.0;
-try {
-    var fileName = File(app.activeScript.fullName).parent.fsName + "\\mappings.csv";
-    var file = new File(fileName)
-    file.open("r");
-    while(!file.eof){
-        row=file.readln();
-        cols = row.split(",");
-        if (matches(cols[0])) {
-          targetFont = cols[1];
-          targetFontScalingFactor = cols[2];
-          break;
-        }
-    }
-    file.close();
-} catch (err) {
-    alert(err);
-}
-//Mappings loaded----------------------------------------------------------------------------------
-// Progress bar -----------------------------------------------------------------------------------
-var myProgressWin = new Window ( "window", "Unicode Script "+app.activeDocument.name );
-var myProgressBar = myProgressWin.add ("progressbar", [12, 12, 350, 24], 0, stories.length);
-var myProgressTxt = myProgressWin.add("statictext", undefined, "Starting Conversion");
-myProgressTxt.bounds = [0, 0, 340, 200];
-myProgressTxt.alignment = "left";
-myProgressWin.show();
-// Progress bar -----------------------------------------------------------------------------------
-if (textSelected()) {
-  convert(app.selection[0], targetFont, targetFontScalingFactor);
-} else {
-  for (var i = 0; i < stories.length; i++) {
-    var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
-    for (var j = textStyleRanges.length-1; j >= 0; j--) {
-      var myText = textStyleRanges[j];
-      write_to_file(myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
-      if (matches(myText.appliedFont.fontFamily)) {
-        convert(myText, targetFont, targetFontScalingFactor);
+  var stories = app.activeDocument.stories.everyItem().getElements();
+  //Load mappings from file--------------------------------------------------------------------------
+  var targetFont = "Kokila";
+  var targetFontScalingFactor = 1.07;
+  try {
+      var fileName = File(app.activeScript.fullName).parent.fsName + "\\mappings.csv";
+      var file = new File(fileName)
+      file.open("r");
+      while(!file.eof){
+          row=file.readln();
+          cols = row.split(",");
+          if (matches(cols[0])) {
+            targetFont = cols[1];
+            targetFontScalingFactor = cols[2];
+            break;
+          }
       }
-      // Progress bar -----------------------------------------------------------------------------------
-      myProgressBar.value = i;
-      myProgressTxt.text = String("Converted story " + (myProgressBar.value+1) + " of " + stories.length + "(" + textStyleRanges.length + " textStyleRanges): " + myText.contents);
-      // Progress bar -----------------------------------------------------------------------------------
+      file.close();
+  } catch (err) {
+      alert(err);
+  }
+  //Mappings loaded----------------------------------------------------------------------------------
+  // Progress bar -----------------------------------------------------------------------------------
+  var myProgressWin = new Window ( "window", "Unicode Script "+app.activeDocument.name );
+  var myProgressBar = myProgressWin.add ("progressbar", [12, 12, 350, 24], 0, stories.length);
+  var myProgressTxt = myProgressWin.add("statictext", undefined, "Starting Conversion");
+  myProgressTxt.bounds = [0, 0, 340, 200];
+  myProgressTxt.alignment = "left";
+  myProgressWin.show();
+  // Progress bar -----------------------------------------------------------------------------------
+  if (textSelected()) {
+    convert(app.selection[0], targetFont, targetFontScalingFactor);
+  } else {
+    for (var i = 0; i < stories.length; i++) {
+      var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
+      for (var j = textStyleRanges.length-1; j >= 0; j--) {
+        var myText = textStyleRanges[j];
+        write_to_file(myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
+        if (matches(myText.appliedFont.fontFamily)) {
+          convert(myText, targetFont, targetFontScalingFactor);
+          convertStyle(myText, targetFont, targetFontScalingFactor);
+        }
+        // Progress bar -----------------------------------------------------------------------------------
+        myProgressBar.value = i;
+        myProgressTxt.text = String("Converted story " + (myProgressBar.value+1) + " of " + stories.length + "(" + textStyleRanges.length + " textStyleRanges): " + myText.contents);
+        // Progress bar -----------------------------------------------------------------------------------
+      }         
+    }
+    convertParagraphStyles(targetFont, targetFontScalingFactor);
+    convertFont();
+    // Progress bar -----------------------------------------------------------------------------------
+    myProgressWin.close();
+    // Progress bar -----------------------------------------------------------------------------------  
+    
+  }  
+})();
+function convertFont() {
+  for (var i = 0; i < app.activeDocument.fonts.length; i++) {
+    var fontFamily = app.activeDocument.fonts[i].fontFamily;
+    if (matches(fontFamily))     {
+      app.findTextPreferences = NothingEnum.nothing;
+      app.changeTextPreferences = NothingEnum.nothing;
+      app.findTextPreferences.appliedFont = fontFamily;
+      app.changeTextPreferences.appliedFont = "Kokila";
+      app.activeDocument.changeText();
     }
   }
-  // Progress bar -----------------------------------------------------------------------------------
-  myProgressWin.close();
-  // Progress bar -----------------------------------------------------------------------------------
+}
+function convertParagraphStyles(targetFont, targetFontScalingFactor) {
+	var paraStyles = app.activeDocument.paragraphStyles.everyItem().getElements();
+  // go upto 1 as 0 is the root style and has no properties
+  for (var i = paraStyles.length-1; i > 0; i--) {
+    try {
+      paraStyles[i].composer = "Adobe World-Ready Paragraph Composer";
+    } catch (err) {
+      write_to_file("Failed to set world-ready for " + paraStyles[i].name);
+    }
+    convertStyle(paraStyles[i], targetFont, targetFontScalingFactor);
   }
-})();
+}
+function convert(txt, font, scalingFactor) {
+  var converted = convert_to_unicode(txt.contents);
+  if (converted != undefined) {
+    //txt.pointSize = txt.pointSize*scalingFactor;
+    txt.contents = converted;
+  }
+  return converted;
+}
+function convertStyle(style, targetFont, scalingFactor) {
+  // change font AFTER checking style name. Otherwise style name will change too soon
+  if (style.fontStyle.indexOf("Bold") >= 0 && style.fontStyle.indexOf("Italic") >= 0) {
+      style.appliedFont = app.fonts.item(targetFont);
+      style.fontStyle = "Bold Italic";
+  } else if (style.fontStyle.indexOf("Bold") >= 0) {
+      style.appliedFont = app.fonts.item(targetFont);
+      style.fontStyle = "Bold";
+  } else if (style.fontStyle.indexOf("Italic") >= 0) {
+      style.appliedFont = app.fonts.item(targetFont);
+      style.fontStyle = "Italic";
+  } else {
+    style.appliedFont = app.fonts.item(targetFont);
+  }
+  if (!isNaN(style.pointSize)) {
+    style.pointSize = Math.round(style.pointSize*scalingFactor);
+  }
+  style.composer  = "Adobe World-Ready Paragraph Composer";
+}
 function textSelected() {
   if (app.selection.length == 1) {
     switch (app.selection[0].constructor.name) {
@@ -75,15 +130,6 @@ function textSelected() {
       return false;
   }
 }
-function convert(txt, font, scalingFactor) {
-  var converted = convert_to_unicode(txt.contents);
-  if (converted != undefined) {
-    txt.composer = "Adobe World-Ready Paragraph Composer";
-    txt.appliedFont = app.fonts.item(font);
-    txt.pointSize = txt.pointSize*scalingFactor;
-    txt.contents = converted;
-  }
-}
 function matches(fontName) {
   return fontName.indexOf("Walkman-Chanakya-") == 0;
 }
@@ -97,12 +143,27 @@ function write_to_file(text) {
   else {
     file.open("w");
   }
-  file.write(text);
+  var d = new Date();
+  file.write(d.toString() + ":" + text + "\n");
   file.close();
+}
+function write_styles_to_file(textStyleRanges) {
+  write_to_file("********************* BEGIN 2 *********************");
+  for (var k = textStyleRanges.length-1; k >= 0; k--) {
+    var tmpText = textStyleRanges[k];
+    write_to_file(tmpText.appliedFont.fontFamily + ", "
+                  + tmpText.appliedCharacterStyle.name + ", "
+                  + tmpText.appliedParagraphStyle.name + ", "
+                  + tmpText.fontStyle + ", "
+                  + tmpText.contents);
+  }
+  write_to_file("*********************** END 2 **********************");
 }
 function convert_to_unicode(legacy_txt) {
   var array_one = new Array(
     "I+kQ", "फ़" ,
+    "OkQa", "क़",
+    "jQ", "रु",
     "ñ" , "॰" ,
     "Q\+Z" , "QZ\+" ,
     "sas" , "sa" ,
@@ -127,8 +188,7 @@ function convert_to_unicode(legacy_txt) {
     "T+" , "ज़्" ,
     "t+" , "ज़" ,
     "M+" , "ड़" ,
-    "\<+" , "ढ़" ,
-    "Q+" , "फ़" ,
+    "\<+" , "ढ़" ,    
     "\;+" , "य़" ,
     "j+" , "ऱ" ,
     "u+" , "ऩ" ,
@@ -139,7 +199,6 @@ function convert_to_unicode(legacy_txt) {
     "—" , "कृ" ,
     "é" , "न्न" ,
     "™" , "न्न्" ,
-    "\=kk" , "\=k" ,
     "f\=k" , "f\=" ,
     "à" , "ह्न" ,
     "á" , "ह्य" ,
@@ -208,8 +267,8 @@ function convert_to_unicode(legacy_txt) {
     "Pk" , "च" ,
     "P" , "च्" ,
     "N" , "छ" ,
-    "\”k" , "ज" ,
-    "\”" , "ज्" ,
+    "\”k" , "ज़" ,
+    "\”" , "ज़्" ,
     "t" , "ज" ,
     "Tk" , "ज" ,
     "T" , "ज्" ,
@@ -296,8 +355,7 @@ function convert_to_unicode(legacy_txt) {
     "Ľ" , "द्ध" ,
     "˝" , "ऋ" ,
     "Ř" , "क्र" ,
-    "Ń" , "कृ" ,
-    "Q" , "फ़" ,
+    "Ń" , "कृ" ,    
     "č" , "ध्" ,
     "Ş" , "्र" ,
     "I+k", "",
@@ -334,12 +392,13 @@ function convert_to_unicode(legacy_txt) {
     "Þ" , "\“" ,
     "ß" , "\”" ,
     "¾" , "=" ,
+    "-" , "." , // placed above the & conversion below to prevent '&' -> '-' -> '.'
     "&" , "-" ,
     "µ" , "-" ,
     "¿" , "{" ,
     "À" , "}" ,
     "A" , "।" ,
-    // "-" , "." ,
+    
     "Œ" , "॰" ,
     "]" , "\," ,
     "@" , "\/" ,
@@ -367,24 +426,29 @@ function convert_to_unicode(legacy_txt) {
     else  { sthiti2 = text_size  ;  chale_chalo = 0 }
     //alert(legacy_txt);
     processed_text = processed_text + Replace_Symbols(legacy_txt);
+    write_to_file("convert_to_unicode(" + legacy_txt + ") = " + processed_text);
   }
+  
   return processed_text;
   function Replace_Symbols(modified_substring)
   {
+    write_to_file("Replace_Symbols(" + modified_substring + ") = ");
     //substitute array_two elements in place of corresponding array_one elements
     if ( modified_substring == "" )  // if stringto be converted is non-blank then no need of any processing.
       return;
     modified_substring = modified_substring.replace( /([ZzsSqwa¡`]+)Q/g , "Q$1" )
     for ( input_symbol_idx = 0;   input_symbol_idx < array_one_length-1;    input_symbol_idx = input_symbol_idx + 2 )
     {
-      idx = 0  ;  // index of the symbol being searched for replacement
-      while (idx != -1 ) { //while-00
+      var idx = modified_substring.indexOf( array_one[input_symbol_idx] )  ;  // index of the symbol being searched for replacement
+      while (idx != -1 ) { // while-00        
+        write_to_file("idx = " + idx + ", " + array_one[ input_symbol_idx ] + " -> " + array_one[input_symbol_idx+1] + " = " + modified_substring);        
         modified_substring = modified_substring.replace( array_one[ input_symbol_idx ] , array_one[input_symbol_idx+1] )
-        idx = modified_substring.indexOf( array_one[input_symbol_idx] )
+        idx = modified_substring.indexOf( array_one[input_symbol_idx] )  ;  // index of the symbol being searched for replacement
       } // end of while-00 loop
     } // end of for loop
     modified_substring = modified_substring.replace( /([ेैुूं]+)्र/g , "्र$1" ) ;
     modified_substring = modified_substring.replace( /ं([ाेैुू]+)/g , "$1ं" ) ;
+    modified_substring = modified_substring.replace( /([ाेैुू]+)़/g , "़$1" ) ;
     modified_substring = modified_substring.replace( /([ \n])ा/g , "$1श" ) ;
     modified_substring = modified_substring.replace( /¯/g , "f") ;
     modified_substring = modified_substring.replace( /Ł/g , "र्f") ;
@@ -398,6 +462,7 @@ function convert_to_unicode(legacy_txt) {
     modified_substring = modified_substring.replace( /([कखगघचछजझटठडड़ढढ़णतथदधनपफबभमयरलळवशषसहक्षज्ञ])([ािीुूृेैोौंँ]*)([Z])/g , "$3$1$2" ) ;
     modified_substring = modified_substring.replace( /([कखगघचछजझटठडड़ढढ़णतथदधनपफबभमयरलळवशषसहक्षज्ञ])([्])([Z])/g , "$3$1$2" ) ;
     modified_substring = modified_substring.replace( /Z/g , "र्" ) ;
+    write_to_file(modified_substring);
     return modified_substring;
   } // end of the function  Replace_Symbols
 } // end of convert_to_unicode function
