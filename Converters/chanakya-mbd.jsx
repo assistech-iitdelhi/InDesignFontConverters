@@ -252,22 +252,23 @@ function convert_to_unicode(legacy_txt) {
     "\u00aa", "ग",
     "\u00ab", "ड",
     "\u00ac", "प",
-    "\u00ae", "िं",
+    "\u00ae", "εμ",
     "\u00af", "\u0970",
+    "\u00b0", "ँ",
     "\u00b1", "ह्",
     "\u00b3", "ॉ",
     "\u00b4", "ऋ",
     "\u00b5", "द्ब्र",
     "\u00b6", "ष्ट्व",
     "\u00b7", "ष",
-    "\u00b8", "र्",
+    "\u00b8", "ρ",
     "\u00ba", "द",
     "\u00bb", "फ",
     "\u00bc", "ा",
     "\u00be", "औ", 
     "\u00bf", "छ",
     "\u00c0", "ल्",
-    "\u00c1", "ि",
+    "\u00c1", "ε",
     "\u00c2", "ू",
     "\u00c3", "त",
     "\u00c4", "क्",
@@ -278,10 +279,10 @@ function convert_to_unicode(legacy_txt) {
     "\u00c9", "घ्",
     "\u00ca", "ा",
     "\u00cb", "ी",
-    "\u00cc", "िर्",
+    "\u00cc", "ερ",
     "\u00cd", "ू",
     "\u00ce", "ृ",
-    "\u00cf", "िर्ं",
+    "\u00cf", "ερμ",
     "\u00d1", "ल्ल",
     "\u00d2", "ै",
     "\u00d5", "थ",
@@ -412,17 +413,14 @@ function convert_to_unicode(legacy_txt) {
     //"\u0055", "",
     "्ो", "े", 
     "्ौ", "ै", 
-    "्ाे", "े", 
-     "्ाा", "ा", 
-    "ाे", "ो", 
-    "ाे", "ो", 
+    "्ा", "",
+    "अा", "आ",
     "ाै", "ौ", 
-    "्ा", "", 
-    "ंु", "ुं", 
-    "ओे", "ओ", 
-    "ोे", "ो", 
-    "ाे", "ो", 
-    "ईंं", "ईं");
+    "अौ", "औ",
+    "ाे", "ो",    
+    "अो", "ओ",
+    "एे", "ऐ",
+     );
 
 
   var array_one_length = array_one.length ;
@@ -450,9 +448,9 @@ function convert_to_unicode(legacy_txt) {
   }
   write_to_file(processed_text);
   return processed_text;
-  function Replace_Symbols( )
+  function Replace_Symbols( ) 
   {
-    //write_to_file("Replace_Symbols(" + modified_substring + ") = ");
+    write_to_file("Replace_Symbols(" + modified_substring + ") 1 = ");
     //substitute array_two elements in place of corresponding array_one elements
     if ( modified_substring != "" )  // if string to be converted is non-blank then no need of any processing.
     {
@@ -460,54 +458,30 @@ function convert_to_unicode(legacy_txt) {
       {
         var idx = modified_substring.indexOf( array_one[input_symbol_idx] )  ;  // index of the symbol being searched for replacement
         while (idx != -1 ) { //while-00
-          //write_to_file("idx = " + idx + ", input_symbol_idx = " + input_symbol_idx + ", " + array_one[ input_symbol_idx ] + " -> " + array_one[input_symbol_idx+1] + " = " + modified_substring);           
           modified_substring = modified_substring.replace( array_one[ input_symbol_idx ] , array_one[input_symbol_idx+1] )
           idx = modified_substring.indexOf( array_one[input_symbol_idx] )
         } // end of while-00 loop
       } // end of for loop
+
+      modified_substring = modified_substring.replace( /([ेैुूं]+)्र/g , "्र$1" ) ;
+      modified_substring = modified_substring.replace( /ं([ाेैुू]+)/g , "$1ं" ) ;
+      modified_substring = modified_substring.replace( /([ाेैुू]+)़/g , "़$1" ) ;
+      modified_substring = modified_substring.replace( /ερμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)/g , "र्$1िं" );
+      modified_substring = modified_substring.replace( /ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)ρμ/g , "र्$1िं" );
       
-      // Code for Replacing Special glyph : Z (reph+anusvAr)
-      modified_substring = modified_substring.replace( /Z/g , "üं" ) ; // at some places  ì  is  used eg  in "कर्कंधु,पूर्णांक".
-
-      // code for replacing  "ç"   with "ि" (chhotee ee kii maatraa) and correcting its position too.
-      var position_of_f = modified_substring.indexOf( "ç" )  ;
-
-      while ( position_of_f != -1 )  //while-02
-      {
-        var charecter_right_to_f = modified_substring.charAt( position_of_f + 1 )  ;
-        modified_substring = modified_substring.replace( "ç" + charecter_right_to_f  ,  charecter_right_to_f + "ि" )  ;
-        position_of_f = position_of_f + 1  ;
-        while ( ( modified_substring.charAt( position_of_f + 1 ) == "्" ) & ( position_of_f < modified_substring.length - 1 ) )
-        {
-          var string_to_be_replaced = modified_substring.charAt( position_of_f + 1 ) + modified_substring.charAt( position_of_f + 2 )  ;
-          modified_substring = modified_substring.replace( "ि" + string_to_be_replaced , string_to_be_replaced + "ि" )  ;
-          position_of_f = position_of_f + 2  ;
-        }
-
-        position_of_f = modified_substring.search( /ç/ , position_of_f + 1 ) ; // search for ç ahead of the current position.
-      } // end of while-02 loop
-
-      //Eliminating "ü"(reph) and putting 'half - r' at proper position for this.
-      set_of_matras = "ा ि ी ु ू ृ े ै ो ौ ं ः ँ ॅ" 
-      var position_of_Z = modified_substring.indexOf( "ü" )
-
-      while( position_of_Z > 0 )  // while-04
-      {
-        probable_position_of_half_r = position_of_Z - 1 ;
-        var charecter_at_probable_position_of_half_r = modified_substring.charAt( probable_position_of_half_r )
-
-        // trying to find non-maatra position left to current ü (ie, half -r).
-        while( set_of_matras.match( charecter_at_probable_position_of_half_r ) != null )  // while-05
-        {
-          probable_position_of_half_r = probable_position_of_half_r - 1 ;
-          charecter_at_probable_position_of_half_r = modified_substring.charAt( probable_position_of_half_r ) ;
-        }// end of while-05
-        charecter_to_be_replaced = modified_substring.substr ( probable_position_of_half_r , ( position_of_Z - probable_position_of_half_r ) ) ;
-        new_replacement_string = "र्" + charecter_to_be_replaced ; 
-        charecter_to_be_replaced = charecter_to_be_replaced + "ü" ;
-        modified_substring = modified_substring.replace( charecter_to_be_replaced , new_replacement_string ) ;
-        position_of_Z = modified_substring.indexOf( "ü" ) ;
-      }// end of while-04
+      modified_substring = modified_substring.replace( /ερ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)/g , "र्$1ि" );
+      modified_substring = modified_substring.replace( /ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)ρ/g , "र्$1ि" );
+      
+      modified_substring = modified_substring.replace( /εμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)/g , "$1िं" );
+      modified_substring = modified_substring.replace( /ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)/g , "$1ि" );
+      modified_substring = modified_substring.replace( /(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाेैोौॊॉी]?)ρ[μं]/g , "र्$1ं" );   
+      write_to_file("Replace_Symbols(" + modified_substring + ") 2 = ");
+      modified_substring = modified_substring.replace( /(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाेैोौॊॉी]?)ρ/g , "र्$1" );   
+      modified_substring = modified_substring.replace( /इρ[μं]/g , "ईं");
+      write_to_file("Replace_Symbols(" + modified_substring + ") 3 = ");
+      modified_substring = modified_substring.replace( /इρ/g , "ई");
+      write_to_file("Replace_Symbols(" + modified_substring + ") 44 = ");
+      
       
     }//end of IF  statement  meant to  supress processing of  blank  string.
   } // end of the function  Replace_Symbols
