@@ -171,6 +171,7 @@ function write_styles_to_file(textStyleRanges) {
   write_to_file("*********************** END 2 **********************");
 }
 function convert_to_unicode(legacy_txt) {
+  write_to_file(legacy_txt);
   write_to_file(escape(legacy_txt));
   var array_one = new Array(
     "\u0023", "प्त",
@@ -199,6 +200,7 @@ function convert_to_unicode(legacy_txt) {
     "\u0052", "क्त्र",
     "\u0053", "स्",
     "\u0054", "ञ्ज",
+    "\u0055", "",
     "\u0056", "ङ्क", 
     "\u0057", "ङ्ख",
     "\u0058", "ङ्ग",
@@ -241,8 +243,10 @@ function convert_to_unicode(legacy_txt) {
     "\u007f", "े",
     "\u00a0", "ज़्",
     "\u00a1", "ज",
+    "\u00a2", "ं",
     "\u00a4", "झ्",
     "\u00a5", "ं",
+    "\u00a7", "",
     "\u00a8", "ऋ",
     "\u00a9", "उ",
     "\u00aa", "ग",
@@ -402,6 +406,7 @@ function convert_to_unicode(legacy_txt) {
     "\u25ca", "म",
     "\ufb02", "व",
     "\u00c0", "ल्", 
+    "\ue0f0", "े",
     "\x10", "ऍ",
     "\x12", "ऑ", 
     //"\u0055", "",
