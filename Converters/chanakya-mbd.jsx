@@ -48,7 +48,7 @@
         // Progress bar -----------------------------------------------------------------------------------
       }         
     }
-    convertParagraphStyles(targetFont, targetFontScalingFactor);
+    //convertParagraphStyles(targetFont, targetFontScalingFactor);
     convertFont();
     // Progress bar -----------------------------------------------------------------------------------
     myProgressWin.close();
@@ -71,7 +71,7 @@ function convertParagraphStyles(targetFont, targetFontScalingFactor) {
 function convert(txt, font, scalingFactor) {
   var converted = convert_to_unicode(txt.contents);
   if (converted != undefined) {
-    //txt.pointSize = txt.pointSize*scalingFactor;
+    txt.pointSize = Math.round(txt.pointSize*scalingFactor);
     txt.contents = converted;
   }
   return converted;
@@ -285,6 +285,7 @@ function convert_to_unicode(legacy_txt) {
     "\u00cf", "ερμ",
     "\u00d1", "ल्ल",
     "\u00d2", "ै",
+    "\u00d4", "",
     "\u00d5", "थ",
     "\u00d6", "ज्",
     "\u00d8", "ख्न",
