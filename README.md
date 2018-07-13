@@ -1,4 +1,4 @@
-# Convert non-unicode Devanagari text in InDesign files to Unicode and use the Utsaah font for display. 
+# Convert non-unicode Devanagari text in InDesign files to Unicode 
 
 ## USAGE
 1. Download the repository and copy the folder's contents in the User Scripts Panel directory of InDesign
