@@ -20,52 +20,27 @@
   } catch (err) {
       alert(err);
   }
-  //Mappings loaded----------------------------------------------------------------------------------
-  // Progress bar -----------------------------------------------------------------------------------
-  var myProgressWin = new Window ( "window", "Unicode Script "+app.activeDocument.name );
-  var myProgressBar = myProgressWin.add ("progressbar", [12, 12, 350, 24], 0, stories.length);
-  var myProgressTxt = myProgressWin.add("statictext", undefined, "Starting Conversion");
-  myProgressTxt.bounds = [0, 0, 340, 200];
-  myProgressTxt.alignment = "left";
-  myProgressWin.show();
-  // Progress bar -----------------------------------------------------------------------------------
-  if (textSelected()) {
-    //convert(app.selection[0], targetFont, targetFontScalingFactor);
-  } else {
-    for (var i = 0; i < stories.length; i++) {
-      var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
-      for (var j = textStyleRanges.length-1; j >= 0; j--) {
-        var myText = textStyleRanges[j];
-        
-        if (matches(myText.appliedFont.fontFamily)) {
-          convert(myText, targetFont, targetFontScalingFactor);          
-          if (myText.appliedParagraphStyle.name == "[No Paragraph Style]") {
-            convertStyle(myText, targetFont, targetFontScalingFactor);
-          }
-        } else {
-          write_to_file("Skipping textStyleRange of " + myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
-        }
-        // Progress bar -----------------------------------------------------------------------------------
-        myProgressBar.value = i;
-        myProgressTxt.text = String("Converted story " + (myProgressBar.value+1) + " of " + stories.length + "(" + textStyleRanges.length + " textStyleRanges): " + myText.contents);
-        // Progress bar -----------------------------------------------------------------------------------
-      }         
-    }
-    convertParagraphStyles(targetFont, targetFontScalingFactor);
-    convertFont();
-    // Progress bar -----------------------------------------------------------------------------------
-    myProgressWin.close();
-    // Progress bar -----------------------------------------------------------------------------------  
-  }  
+  convert_to_unicode(); 
 })();
-function convertFont() {
-  for (var i = 0; i < app.activeDocument.fonts.length; i++) {
-    var fontFamily = app.activeDocument.fonts[i].fontFamily;
-    if (matches(fontFamily))     {
-      app.findTextPreferences = NothingEnum.nothing;
-      app.changeTextPreferences = NothingEnum.nothing;
-      app.findTextPreferences.appliedFont = fontFamily;
+function convertFont(sourceText, targetText) {
+  var styleFor = {
+    'Chanakya 905 Normal'     : 'Regular',
+    'Chanakya 905 Bold'       : 'Bold',
+    'Chanakya 905 Italic'     : 'Italic',
+    'Chanakya 905 BoldItalic' : 'Bold Italic'
+  };
+  for (style in styleFor) {
+    if (typeof styleFor[style] != 'function') {
+      app.findTextPreferences.appliedFont = "Walkman-Chanakya-905";
+      app.findTextPreferences.findWhat = sourceText;
+      app.findChangeTextOptions.caseSensitive = true;
+      app.findTextPreferences.fontStyle = style;
+
+      app.changeTextPreferences.changeTo = targetText;
+      app.changeTextPreferences.composer = "Adobe World-Ready Paragraph Composer";
       app.changeTextPreferences.appliedFont = "Kokila";
+      app.changeTextPreferences.fontStyle = styleFor[style];
+      
       app.activeDocument.changeText();
     }
   }
@@ -76,14 +51,6 @@ function convertParagraphStyles(targetFont, targetFontScalingFactor) {
   for (var i = paraStyles.length-1; i > 0; i--) {
     convertStyle(paraStyles[i], targetFont, targetFontScalingFactor);
   }
-}
-function convert(txt, font, scalingFactor) {
-  var converted = convert_to_unicode(txt.contents);
-  if (converted != undefined) {
-    //txt.pointSize = Math.round(txt.pointSize*scalingFactor);
-    txt.contents = converted;
-  }
-  return converted;
 }
 function convertStyle(style, targetFont, scalingFactor) {
   if (!matches(style.appliedFont.fontFamily))
@@ -110,33 +77,7 @@ function convertStyle(style, targetFont, scalingFactor) {
   }
   style.composer  = "Adobe World-Ready Paragraph Composer";
 }
-function textSelected() {
-  if (app.selection.length == 1) {
-    switch (app.selection[0].constructor.name) {
-      case "InsertionPoint":
-      case "Character":
-      case "Word":
-      case "TextStyleRange":
-      case "Line":
-      case "Paragraph":
-      case "TextColumn":
-      case "Text":
-      case "Story":
-        if (app.selection[0].contents.length > 0)
-          return true;
-        else
-          return false;
-        break;
-      default:
-        return false;
-    }
-  } else {
-      return false;
-  }
-}
-function matches(fontName) {
-  return fontName.indexOf("Walkman-Chanakya-") == 0;
-}                          
+                        
 function clear_log(text) {
   var file = new File("~/Desktop/ID-converters.log");
   file.encoding = "UTF-8";
@@ -161,9 +102,12 @@ function write_to_file(text) {
   file.write(d.toString() + ": " + File($.fileName).name + ": " + text + "\n");
   file.close();
 }
-
-function convert_to_unicode(legacy_txt) {
+function matches(fontName) {
+  return fontName.indexOf("Walkman-Chanakya-") == 0;
+}  
+function convert_to_unicode() {
   var array_one = new Array(
+    " ", " ", // otherwise spaces remain in the source font
     "I+kQ", "फ़" ,
     "OkQa", "क़",
     "jQ", "रु",
@@ -414,58 +358,9 @@ function convert_to_unicode(legacy_txt) {
     "अो" , "ओ" ,
     "आॅ" , "ऑ");
   var array_one_length = array_one.length ;
-  //  Break the long text into small bunches of chunk_size  characters each.
-  var text_size = legacy_txt.length ;
-  var processed_text = '' ;  //blank
-  var sthiti1 = 0 ;  var sthiti2 = 0 ;  var chale_chalo = 1 ;
-  var chunk_size = 6000; // this charecter long text will be processed in one go.
-  while ( chale_chalo == 1 )
-  {
-    sthiti1 = sthiti2 ;
-    if ( sthiti2 < ( text_size - chunk_size ) )
-    {
-      sthiti2 +=  chunk_size ;
-    }
-    else  { sthiti2 = text_size  ;  chale_chalo = 0 }
-    //alert(legacy_txt);
-    processed_text = processed_text + Replace_Symbols(legacy_txt);
-    write_to_file("convert_to_unicode(" + legacy_txt + ") = " + processed_text);
-  }
   
-  return processed_text;
-  function Replace_Symbols(modified_substring)
-  {
-    var input = modified_substring;
-    
-    //substitute array_two elements in place of corresponding array_one elements
-    if ( modified_substring == "" )  // if stringto be converted is non-blank then no need of any processing.
-      return;
-    modified_substring = modified_substring.replace( /([ZzsSqwa¡`]+)Q/g , "Q$1" )
-    for ( input_symbol_idx = 0;   input_symbol_idx < array_one_length-1;    input_symbol_idx = input_symbol_idx + 2 )
-    {
-      var idx = modified_substring.indexOf( array_one[input_symbol_idx] )  ;  // index of the symbol being searched for replacement
-      while (idx != -1 ) { // while-00                
-        modified_substring = modified_substring.replace( array_one[ input_symbol_idx ] , array_one[input_symbol_idx+1] )
-        idx = modified_substring.indexOf( array_one[input_symbol_idx] )  ;  // index of the symbol being searched for replacement
-      } // end of while-00 loop
-    } // end of for loop
-    modified_substring = modified_substring.replace( /([ेैुूं]+)्र/g , "्र$1" ) ;
-    modified_substring = modified_substring.replace( /ं([ाेैुू]+)/g , "$1ं" ) ;
-    modified_substring = modified_substring.replace( /([ाेैुू]+)़/g , "़$1" ) ;
-    modified_substring = modified_substring.replace( /([ \n])ा/g , "$1श" ) ;
-    modified_substring = modified_substring.replace( /¯/g , "f") ;
-    modified_substring = modified_substring.replace( /Ł/g , "र्f") ;
-    modified_substring = modified_substring.replace( /([fŻ])([कखगघङचछजझञटठडड़ढढ़णतथदधनपफबभमयरलवशषसहक्ष])/g , "$2$1" ) ;
-    modified_substring = modified_substring.replace( /([fŻ])(्)([कखगघङचछजझञटठडड़ढढ़णतथदधनपफबभमयरलवशषसहक्ष])/g , "$2$3$1" ) ;
-    modified_substring = modified_substring.replace( /([fŻ])(्)([कखगघङचछजझञटठडड़ढढ़णतथदधनपफबभमयरलवशषसहक्ष])/g , "$2$3$1" ) ;
-    modified_substring = modified_substring.replace( /f/g , "ि") ;
-    modified_substring = modified_substring.replace( /Ż/g , "िं") ;
-    //following three statement for adjusting position of reph ie, half r .
-    modified_substring = modified_substring.replace( /±/g , "Zं" ) ;
-    modified_substring = modified_substring.replace( /([कखगघचछजझटठडड़ढढ़णतथदधनपफबभमयरलळवशषसहक्षज्ञ])([ािीुूृेैोौंँ]*)([Z])/g , "$3$1$2" ) ;
-    modified_substring = modified_substring.replace( /([कखगघचछजझटठडड़ढढ़णतथदधनपफबभमयरलळवशषसहक्षज्ञ])([्])([Z])/g , "$3$1$2" ) ;
-    modified_substring = modified_substring.replace( /Z/g , "र्" ) ;
-    write_to_file("Replace_Symbols(" + modified_substring + ") = " + modified_substring);
-    return modified_substring;
-  } // end of the function  Replace_Symbols
-} // end of convert_to_unicode function
+  for ( input_symbol_idx = 0;   input_symbol_idx < array_one_length-1;    input_symbol_idx = input_symbol_idx + 2 ) {
+    convertFont(array_one[input_symbol_idx], array_one[input_symbol_idx+1]);
+  }   
+  return;
+ } // end of convert_to_unicode function
