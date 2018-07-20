@@ -30,16 +30,18 @@
   myProgressWin.show();
   // Progress bar -----------------------------------------------------------------------------------
   if (textSelected()) {
-    convert(app.selection[0], targetFont, targetFontScalingFactor);
+    //convert(app.selection[0], targetFont, targetFontScalingFactor);
   } else {
     for (var i = 0; i < stories.length; i++) {
       var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
       for (var j = textStyleRanges.length-1; j >= 0; j--) {
         var myText = textStyleRanges[j];
-        write_to_file(myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
+        
         if (matches(myText.appliedFont.fontFamily)) {
           convert(myText, targetFont, targetFontScalingFactor);
           convertStyle(myText, targetFont, targetFontScalingFactor);
+        } else {
+          write_to_file("Skipping textStyleRange of " + myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
         }
         // Progress bar -----------------------------------------------------------------------------------
         myProgressBar.value = i;
@@ -82,7 +84,7 @@ function convertParagraphStyles(targetFont, targetFontScalingFactor) {
 function convert(txt, font, scalingFactor) {
   var converted = convert_to_unicode(txt.contents);
   if (converted != undefined) {
-    //txt.pointSize = txt.pointSize*scalingFactor;
+    //txt.pointSize = Math.round(txt.pointSize*scalingFactor);
     txt.contents = converted;
   }
   return converted;
@@ -132,9 +134,18 @@ function textSelected() {
 }
 function matches(fontName) {
   return fontName.indexOf("Walkman-Chanakya-") == 0;
+}                          
+function clear_log(text) {
+  var file = new File("~/Desktop/ID-converters.log");
+  file.encoding = "UTF-8";
+  if (file.exists) {
+    file.open("w");
+    file.seek(0, 2);
+    file.close();
+  }  
 }
 function write_to_file(text) {
-  var file = new File("~/Desktop/walkman_chanakya.log");
+  var file = new File("~/Desktop/ID-converters.log");
   file.encoding = "UTF-8";
   if (file.exists) {
     file.open("e");
@@ -143,8 +154,8 @@ function write_to_file(text) {
   else {
     file.open("w");
   }
-  var d = new Date();
-  file.write(d.toString() + ":" + text + "\n");
+  var d = new Date();  
+  file.write(d.toString() + ": " + File($.fileName).name + ": " + text + "\n");
   file.close();
 }
 function write_styles_to_file(textStyleRanges) {
