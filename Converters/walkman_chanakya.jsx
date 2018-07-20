@@ -38,8 +38,10 @@
         var myText = textStyleRanges[j];
         
         if (matches(myText.appliedFont.fontFamily)) {
-          convert(myText, targetFont, targetFontScalingFactor);
-          convertStyle(myText, targetFont, targetFontScalingFactor);
+          convert(myText, targetFont, targetFontScalingFactor);          
+          if (myText.appliedParagraphStyle.name == "[No Paragraph Style]") {
+            convertStyle(myText, targetFont, targetFontScalingFactor);
+          }
         } else {
           write_to_file("Skipping textStyleRange of " + myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
         }
@@ -54,7 +56,6 @@
     // Progress bar -----------------------------------------------------------------------------------
     myProgressWin.close();
     // Progress bar -----------------------------------------------------------------------------------  
-    
   }  
 })();
 function convertFont() {
@@ -73,11 +74,6 @@ function convertParagraphStyles(targetFont, targetFontScalingFactor) {
 	var paraStyles = app.activeDocument.paragraphStyles.everyItem().getElements();
   // go upto 1 as 0 is the root style and has no properties
   for (var i = paraStyles.length-1; i > 0; i--) {
-    try {
-      paraStyles[i].composer = "Adobe World-Ready Paragraph Composer";
-    } catch (err) {
-      write_to_file("Failed to set world-ready for " + paraStyles[i].name);
-    }
     convertStyle(paraStyles[i], targetFont, targetFontScalingFactor);
   }
 }
@@ -90,6 +86,9 @@ function convert(txt, font, scalingFactor) {
   return converted;
 }
 function convertStyle(style, targetFont, scalingFactor) {
+  if (!matches(style.appliedFont.fontFamily))
+    return;
+  
   // change font AFTER checking style name. Otherwise style name will change too soon
   if (style.fontStyle.indexOf("Bold") >= 0 && style.fontStyle.indexOf("Italic") >= 0) {
       style.appliedFont = app.fonts.item(targetFont);
@@ -100,6 +99,9 @@ function convertStyle(style, targetFont, scalingFactor) {
   } else if (style.fontStyle.indexOf("Italic") >= 0) {
       style.appliedFont = app.fonts.item(targetFont);
       style.fontStyle = "Italic";
+  } else if (style.fontStyle.indexOf("Normal") >= 0) {
+      style.appliedFont = app.fonts.item(targetFont);
+      style.fontStyle = "Regular";
   } else {
     style.appliedFont = app.fonts.item(targetFont);
   }
@@ -144,6 +146,7 @@ function clear_log(text) {
     file.close();
   }  
 }
+
 function write_to_file(text) {
   var file = new File("~/Desktop/ID-converters.log");
   file.encoding = "UTF-8";
@@ -158,18 +161,7 @@ function write_to_file(text) {
   file.write(d.toString() + ": " + File($.fileName).name + ": " + text + "\n");
   file.close();
 }
-function write_styles_to_file(textStyleRanges) {
-  write_to_file("********************* BEGIN 2 *********************");
-  for (var k = textStyleRanges.length-1; k >= 0; k--) {
-    var tmpText = textStyleRanges[k];
-    write_to_file(tmpText.appliedFont.fontFamily + ", "
-                  + tmpText.appliedCharacterStyle.name + ", "
-                  + tmpText.appliedParagraphStyle.name + ", "
-                  + tmpText.fontStyle + ", "
-                  + tmpText.contents);
-  }
-  write_to_file("*********************** END 2 **********************");
-}
+
 function convert_to_unicode(legacy_txt) {
   var array_one = new Array(
     "I+kQ", "फ़" ,
@@ -443,7 +435,8 @@ function convert_to_unicode(legacy_txt) {
   return processed_text;
   function Replace_Symbols(modified_substring)
   {
-    write_to_file("Replace_Symbols(" + modified_substring + ") = ");
+    var input = modified_substring;
+    
     //substitute array_two elements in place of corresponding array_one elements
     if ( modified_substring == "" )  // if stringto be converted is non-blank then no need of any processing.
       return;
@@ -451,8 +444,7 @@ function convert_to_unicode(legacy_txt) {
     for ( input_symbol_idx = 0;   input_symbol_idx < array_one_length-1;    input_symbol_idx = input_symbol_idx + 2 )
     {
       var idx = modified_substring.indexOf( array_one[input_symbol_idx] )  ;  // index of the symbol being searched for replacement
-      while (idx != -1 ) { // while-00        
-        write_to_file("idx = " + idx + ", " + array_one[ input_symbol_idx ] + " -> " + array_one[input_symbol_idx+1] + " = " + modified_substring);        
+      while (idx != -1 ) { // while-00                
         modified_substring = modified_substring.replace( array_one[ input_symbol_idx ] , array_one[input_symbol_idx+1] )
         idx = modified_substring.indexOf( array_one[input_symbol_idx] )  ;  // index of the symbol being searched for replacement
       } // end of while-00 loop
@@ -473,7 +465,7 @@ function convert_to_unicode(legacy_txt) {
     modified_substring = modified_substring.replace( /([कखगघचछजझटठडड़ढढ़णतथदधनपफबभमयरलळवशषसहक्षज्ञ])([ािीुूृेैोौंँ]*)([Z])/g , "$3$1$2" ) ;
     modified_substring = modified_substring.replace( /([कखगघचछजझटठडड़ढढ़णतथदधनपफबभमयरलळवशषसहक्षज्ञ])([्])([Z])/g , "$3$1$2" ) ;
     modified_substring = modified_substring.replace( /Z/g , "र्" ) ;
-    write_to_file(modified_substring);
+    write_to_file("Replace_Symbols(" + modified_substring + ") = " + modified_substring);
     return modified_substring;
   } // end of the function  Replace_Symbols
 } // end of convert_to_unicode function
