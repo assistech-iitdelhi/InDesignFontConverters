@@ -1,5 +1,4 @@
 ﻿(function() {
-  clear_log();
   var stories = app.activeDocument.stories.everyItem().getElements();
   //Load mappings from file--------------------------------------------------------------------------
   var targetFont = "Kokila";
@@ -48,7 +47,7 @@
         // Progress bar -----------------------------------------------------------------------------------
       }         
     }
-    //convertParagraphStyles(targetFont, targetFontScalingFactor);
+    convertParagraphStyles(targetFont, targetFontScalingFactor);
     convertFont();
     // Progress bar -----------------------------------------------------------------------------------
     myProgressWin.close();
@@ -71,7 +70,7 @@ function convertParagraphStyles(targetFont, targetFontScalingFactor) {
 function convert(txt, font, scalingFactor) {
   var converted = convert_to_unicode(txt.contents);
   if (converted != undefined) {
-    txt.pointSize = Math.round(txt.pointSize*scalingFactor);
+    //txt.pointSize = Math.round(txt.pointSize*scalingFactor);
     txt.contents = converted;
   }
   return converted;
@@ -134,15 +133,6 @@ function textSelected() {
 }
 function matches(fontName) {
   return fontName == "Chanakya";
-}
-function clear_log(text) {
-  var file = new File("~/Desktop/chanakya.log");
-  file.encoding = "UTF-8";
-  if (file.exists) {
-    file.open("w");
-    file.seek(0, 2);
-    file.close();
-  }  
 }
 function write_to_file(text) {
   var file = new File("~/Desktop/chanakya.log");

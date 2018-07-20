@@ -70,7 +70,7 @@ function convertParagraphStyles(targetFont, targetFontScalingFactor) {
 function convert(txt, font, scalingFactor) {
   var converted = convert_to_unicode(txt.contents);
   if (converted != undefined) {
-    //txt.pointSize = txt.pointSize*scalingFactor;
+    //txt.pointSize = Math.round(txt.pointSize*scalingFactor);
     txt.contents = converted;
   }
   return converted;
