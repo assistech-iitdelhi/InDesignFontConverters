@@ -30,7 +30,7 @@
   myProgressWin.show();
   // Progress bar -----------------------------------------------------------------------------------
   if (textSelected()) {
-    //convert(app.selection[0], targetFont, targetFontScalingFactor);
+    convert(app.selection[0], targetFont, targetFontScalingFactor);
   } else {
     for (var i = 0; i < stories.length; i++) {
       var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
@@ -137,16 +137,6 @@ function textSelected() {
 function matches(fontName) {
   return fontName.indexOf("Walkman-Chanakya-") == 0;
 }                          
-function clear_log(text) {
-  var file = new File("~/Desktop/ID-converters.log");
-  file.encoding = "UTF-8";
-  if (file.exists) {
-    file.open("w");
-    file.seek(0, 2);
-    file.close();
-  }  
-}
-
 function write_to_file(text) {
   var file = new File("~/Desktop/ID-converters.log");
   file.encoding = "UTF-8";

@@ -36,10 +36,14 @@
       var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
       for (var j = textStyleRanges.length-1; j >= 0; j--) {
         var myText = textStyleRanges[j];
-        write_to_file(myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
+        
         if (matches(myText.appliedFont.fontFamily)) {
-          convert(myText, targetFont, targetFontScalingFactor);
-          convertStyle(myText, targetFont, targetFontScalingFactor);
+          convert(myText, targetFont, targetFontScalingFactor);          
+          if (myText.appliedParagraphStyle.name == "[No Paragraph Style]") {
+            convertStyle(myText, targetFont, targetFontScalingFactor);
+          }
+        } else {
+          write_to_file("Skipping textStyleRange of " + myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
         }
         // Progress bar -----------------------------------------------------------------------------------
         myProgressBar.value = i;
@@ -55,27 +59,6 @@
     
   }  
 })();
-function convertParagraphStyles(targetFont, targetFontScalingFactor) {
-	var paraStyles = app.activeDocument.paragraphStyles.everyItem().getElements();
-  // go upto 1 as 0 is the root style and has no properties
-  for (var i = paraStyles.length-1; i > 0; i--) {
-    try {
-      paraStyles[i].composer = "Adobe World-Ready Paragraph Composer";
-    } catch (err) {
-      write_to_file("Failed to set world-ready for " + paraStyles[i].name);
-    }
-    convertStyle(paraStyles[i], targetFont, targetFontScalingFactor);
-  }
-}
-function convert(txt, font, scalingFactor) {
-  var converted = convert_to_unicode(txt.contents);
-  if (converted != undefined) {
-    //txt.pointSize = Math.round(txt.pointSize*scalingFactor);
-    txt.contents = converted;
-  }
-  return converted;
-}
-
 function convertFont() {
   for (var i = 0; i < app.activeDocument.fonts.length; i++) {
     var fontFamily = app.activeDocument.fonts[i].fontFamily;
@@ -88,7 +71,25 @@ function convertFont() {
     }
   }
 }
+function convertParagraphStyles(targetFont, targetFontScalingFactor) {
+	var paraStyles = app.activeDocument.paragraphStyles.everyItem().getElements();
+  // go upto 1 as 0 is the root style and has no properties
+  for (var i = paraStyles.length-1; i > 0; i--) {
+    convertStyle(paraStyles[i], targetFont, targetFontScalingFactor);
+  }
+}
+function convert(txt, font, scalingFactor) {
+  var converted = convert_to_unicode(txt.contents);
+  if (converted != undefined) {
+    //txt.pointSize = Math.round(txt.pointSize*scalingFactor);
+    txt.contents = converted;
+  }
+  return converted;
+}
 function convertStyle(style, targetFont, scalingFactor) {
+  if (!matches(style.appliedFont.fontFamily))
+    return;
+  
   // change font AFTER checking style name. Otherwise style name will change too soon
   if (style.fontStyle.indexOf("Bold") >= 0 && style.fontStyle.indexOf("Italic") >= 0) {
       style.appliedFont = app.fonts.item(targetFont);
@@ -99,6 +100,9 @@ function convertStyle(style, targetFont, scalingFactor) {
   } else if (style.fontStyle.indexOf("Italic") >= 0) {
       style.appliedFont = app.fonts.item(targetFont);
       style.fontStyle = "Italic";
+  } else if (style.fontStyle.indexOf("Normal") >= 0) {
+      style.appliedFont = app.fonts.item(targetFont);
+      style.fontStyle = "Regular";
   } else {
     style.appliedFont = app.fonts.item(targetFont);
   }
@@ -135,7 +139,7 @@ function matches(fontName) {
   return fontName == "Chanakya";
 }
 function write_to_file(text) {
-  var file = new File("~/Desktop/chanakya.log");
+  var file = new File("~/Desktop/ID-converters.log");
   file.encoding = "UTF-8";
   if (file.exists) {
     file.open("e");
@@ -144,22 +148,11 @@ function write_to_file(text) {
   else {
     file.open("w");
   }
-  var d = new Date();
-  file.write(d.toString() + ":" + text + "\n");
+  var d = new Date();  
+  file.write(d.toString() + ": " + File($.fileName).name + ": " + text + "\n");
   file.close();
 }
-function write_styles_to_file(textStyleRanges) {
-  write_to_file("********************* BEGIN 2 *********************");
-  for (var k = textStyleRanges.length-1; k >= 0; k--) {
-    var tmpText = textStyleRanges[k];
-    write_to_file(tmpText.appliedFont.fontFamily + ", "
-                  + tmpText.appliedCharacterStyle.name + ", "
-                  + tmpText.appliedParagraphStyle.name + ", "
-                  + tmpText.fontStyle + ", "
-                  + tmpText.contents);
-  }
-  write_to_file("*********************** END 2 **********************");
-}
+
 function convert_to_unicode(legacy_txt) {
   var array_one = new Array(
     '\xf8',
