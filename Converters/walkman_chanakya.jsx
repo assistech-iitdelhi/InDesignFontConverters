@@ -21,7 +21,38 @@
       alert(err);
   }
   convert_to_unicode(); 
+  scaleFont(targetFontScalingFactor);
 })();
+
+function scaleFont(factor) {
+  app.findChangeTextOptions.includeMasterPages = true;
+  var styles = ['Regular', 'Bold', 'Italic', 'Bold Italic'];
+  for (var i = 0; i < styles.length; i++) {
+    if (factor > 1) {
+      for (var j = 72; j > 5; j--) {
+          app.findTextPreferences.appliedFont = "Kokila";
+          app.findTextPreferences.pointSize = j;
+          app.findTextPreferences.fontStyle = styles[i];
+          app.changeTextPreferences.appliedFont = "Kokila";
+          app.changeTextPreferences.pointSize = Math.round(j*factor);
+          app.changeTextPreferences.fontStyle = styles[i];          
+          app.activeDocument.changeText();
+          alert(j);
+      }
+    } else {  
+      for (var j = 6; j < 73; j++) {
+        app.findTextPreferences.appliedFont = "Kokila";
+        app.findTextPreferences.pointSize = j;
+        app.findTextPreferences.fontStyle = styles[i];
+        app.changeTextPreferences.appliedFont = "Kokila";
+        app.changeTextPreferences.pointSize = Math.round(j*factor);     
+        app.changeTextPreferences.fontStyle = styles[i];                  
+        app.activeDocument.changeText();
+        alert(j);
+      }
+    }
+  }
+}
 function convertFont(sourceText, targetText) {
   var styleFor = {
     'Chanakya 905 Normal'     : 'Regular',
@@ -29,11 +60,13 @@ function convertFont(sourceText, targetText) {
     'Chanakya 905 Italic'     : 'Italic',
     'Chanakya 905 BoldItalic' : 'Bold Italic'
   };
+  app.findChangeTextOptions.caseSensitive = true;
+  app.findChangeTextOptions.includeMasterPages = true;
   for (style in styleFor) {
     if (typeof styleFor[style] != 'function') {
       app.findTextPreferences.appliedFont = "Walkman-Chanakya-905";
       app.findTextPreferences.findWhat = sourceText;
-      app.findChangeTextOptions.caseSensitive = true;
+      
       app.findTextPreferences.fontStyle = style;
 
       app.changeTextPreferences.changeTo = targetText;
@@ -43,6 +76,33 @@ function convertFont(sourceText, targetText) {
       
       app.activeDocument.changeText();
     }
+  }
+  // clear settings so the last lookup doesn't interfere with future searches
+  app.findTextPreferences.findWhat = "";
+  app.changeTextPreferences.changeTo = "";
+}
+
+function reorderChars() {
+  var changeTo = [
+    '([ेैुूं]+)्र' , '्र$1' ,
+    'ं([ाेैुू]+)' , '$1ं' ,
+    '([ाेैुू]+)़' , '़$1' ,
+    'व([ाेैुू]+)η', 'क$1',
+    'ερμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , 'र्$1िं',
+    'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)ρμ' , 'र्$1िं',
+    'ερ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , 'र्$1ि',
+    'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)ρ' , 'र्$1ि',
+    'εμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , '$1िं',
+    'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , '$1ि',
+    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाेैोौॊॉी]?)ρ[μं]' , 'र्$1ं',  
+    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाेैोौॊॉी]?)ρ' , 'र्$1' ,
+    'इρ[μं]' , 'ईं',
+    'इρ', 'ई',
+  ];
+  for (var i = 0; i < changeTo.length; i += 2) {
+    app.findGrepPreferences.findWhat = changeTo[i];  
+    app.changeGrepPreferences.changeTo = changeTo[i+1];
+    app.activeDocument.changeGrep();
   }
 }
 function convertParagraphStyles(targetFont, targetFontScalingFactor) {
@@ -107,8 +167,9 @@ function matches(fontName) {
 }  
 function convert_to_unicode() {
   var array_one = new Array(
+    'Q', 'η', 
     " ", " ", // otherwise spaces remain in the source font
-    "I+kQ", "फ़" ,
+    "I+k12wa", "फ़" ,
     "OkQa", "क़",
     "jQ", "रु",
     "ñ" , "॰" ,
@@ -117,6 +178,7 @@ function convert_to_unicode() {
     "aa" , "a" ,
     "¼Z" , "र्द्ध" ,
     "ZZ" , "Z" ,
+    "Z", 'ρ',
     "å" , "०" ,
     "ƒ" , "१" ,
     "\„" , "२" ,
@@ -239,6 +301,7 @@ function convert_to_unicode() {
     "R" , "त्" ,
     "Fk" , "थ" ,
     "F" , "थ्" ,
+    "f" , "ε",
     "n" , "द" ,
     "\/" , "ध" ,
     "èk" , "ध" ,
@@ -362,5 +425,5 @@ function convert_to_unicode() {
   for ( input_symbol_idx = 0;   input_symbol_idx < array_one_length-1;    input_symbol_idx = input_symbol_idx + 2 ) {
     convertFont(array_one[input_symbol_idx], array_one[input_symbol_idx+1]);
   }   
-  return;
+  reorderChars();
  } // end of convert_to_unicode function
