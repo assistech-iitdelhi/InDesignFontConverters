@@ -70,7 +70,7 @@ function convertParagraphStyles(targetFont, targetFontScalingFactor) {
 function convert(txt, font, scalingFactor) {
   var converted = convert_to_unicode(txt.contents);
   if (converted != undefined) {
-    //txt.pointSize = txt.pointSize*scalingFactor;
+    txt.pointSize = Math.round(txt.pointSize*scalingFactor);
     txt.contents = converted;
   }
   return converted;
@@ -89,6 +89,9 @@ function convertFont() {
   }
 }
 function convertStyle(style, targetFont, scalingFactor) {
+  if (!matches(style.appliedFont.fontFamily))
+    return;
+  
   // change font AFTER checking style name. Otherwise style name will change too soon
   if (style.fontStyle.indexOf("Bold") >= 0 && style.fontStyle.indexOf("Italic") >= 0) {
       style.appliedFont = app.fonts.item(targetFont);
@@ -99,6 +102,9 @@ function convertStyle(style, targetFont, scalingFactor) {
   } else if (style.fontStyle.indexOf("Italic") >= 0) {
       style.appliedFont = app.fonts.item(targetFont);
       style.fontStyle = "Italic";
+  } else if (style.fontStyle.indexOf("Normal") >= 0) {
+      style.appliedFont = app.fonts.item(targetFont);
+      style.fontStyle = "Regular";
   } else {
     style.appliedFont = app.fonts.item(targetFont);
   }
@@ -135,7 +141,7 @@ function matches(fontName) {
   return fontName == "Chanakya";
 }
 function write_to_file(text) {
-  var file = new File("~/Desktop/chanakya.log");
+  var file = new File("~/Desktop/ID-converters.log");
   file.encoding = "UTF-8";
   if (file.exists) {
     file.open("e");
@@ -161,6 +167,8 @@ function write_styles_to_file(textStyleRanges) {
   write_to_file("*********************** END 2 **********************");
 }
 function convert_to_unicode(legacy_txt) {
+  write_to_file(legacy_txt);
+  write_to_file(escape(legacy_txt));
   var array_one = new Array(
     '\xf8',
     '\xd2\xd2',
@@ -283,6 +291,7 @@ function convert_to_unicode(legacy_txt) {
     processed_text += modified_substring ;
     
   }
+  write_to_file(processed_text);
   return processed_text;
   function Replace_Symbols( )
   {

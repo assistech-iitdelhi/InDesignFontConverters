@@ -1,8 +1,15 @@
 ﻿(function() {
+  write_to_file("BEGIN");
   var stories = app.activeDocument.stories.everyItem().getElements();
   //Load mappings from file--------------------------------------------------------------------------
   var targetFont = "Kokila";
   var targetFontScalingFactor = 1.07;
+  if (typeof Array.prototype.indexOf != "function") {
+    Array.prototype.indexOf = function (el) {
+    for(var i = 0; i < this.length; i++) if(el === this[i]) return i;
+      return -1;
+    }
+  }
   try {
       var fileName = File(app.activeScript.fullName).parent.fsName + "\\mappings.csv";
       var file = new File(fileName)
@@ -20,12 +27,13 @@
   } catch (err) {
       alert(err);
   }
-  convert_to_unicode(); 
+  convert_to_unicode(getApplicableStyles());
   scaleFont(targetFontScalingFactor);
+  write_to_file("END");
 })();
-
 function scaleFont(factor) {
   app.findChangeTextOptions.includeMasterPages = true;
+  app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
   var styles = ['Regular', 'Bold', 'Italic', 'Bold Italic'];
   for (var i = 0; i < styles.length; i++) {
     if (factor > 1) {
@@ -35,72 +43,97 @@ function scaleFont(factor) {
           app.findTextPreferences.fontStyle = styles[i];
           app.changeTextPreferences.appliedFont = "Kokila";
           app.changeTextPreferences.pointSize = Math.round(j*factor);
-          app.changeTextPreferences.fontStyle = styles[i];          
+          app.changeTextPreferences.fontStyle = styles[i];
           app.activeDocument.changeText();
-          alert(j);
       }
-    } else {  
+    } else {
       for (var j = 6; j < 73; j++) {
         app.findTextPreferences.appliedFont = "Kokila";
         app.findTextPreferences.pointSize = j;
         app.findTextPreferences.fontStyle = styles[i];
         app.changeTextPreferences.appliedFont = "Kokila";
-        app.changeTextPreferences.pointSize = Math.round(j*factor);     
-        app.changeTextPreferences.fontStyle = styles[i];                  
+        app.changeTextPreferences.pointSize = Math.round(j*factor);
+        app.changeTextPreferences.fontStyle = styles[i];
         app.activeDocument.changeText();
-        alert(j);
       }
     }
   }
 }
-function convertFont(sourceText, targetText) {
-  var styleFor = {
-    'Chanakya 905 Normal'     : 'Regular',
-    'Chanakya 905 Bold'       : 'Bold',
-    'Chanakya 905 Italic'     : 'Italic',
-    'Chanakya 905 BoldItalic' : 'Bold Italic'
-  };
+function getApplicableStyles() {
+  var fonts = [];
+  var stories = app.activeDocument.stories.everyItem().getElements();
+  for (var i = 0; i < stories.length; i++) {
+    var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
+    for (var j = 0; j < textStyleRanges.length; j++) {
+      var styleRange = textStyleRanges[j];
+      if (matches(styleRange.appliedFont.fontFamily)) {
+        var styleRange = textStyleRanges[j];
+        var str = [styleRange.appliedFont.fontFamily, styleRange.fontStyle, styleRange.pointSize].join(",");
+        if (fonts.indexOf(str) < 0) {
+          fonts.push(str);
+          write_to_file("Adding style: " + str);
+        }
+      }
+    }
+  }
+  return fonts;
+}
+function styleFor(style) {
+  if (style.indexOf("Bold") >= 0 && style.indexOf("Italic") >= 0) {
+      return "Bold Italic";
+  } else if (style.indexOf("Bold") >= 0) {
+      return "Bold";
+  } else if (style.indexOf("Italic") >= 0) {
+      return "Italic";
+  } else {
+      return "Regular";
+  }
+}
+function convertFont(glyphToCharMap, fonts) {
   app.findChangeTextOptions.caseSensitive = true;
   app.findChangeTextOptions.includeMasterPages = true;
-  for (style in styleFor) {
-    if (typeof styleFor[style] != 'function') {
-      app.findTextPreferences.appliedFont = "Walkman-Chanakya-905";
-      app.findTextPreferences.findWhat = sourceText;
-      
-      app.findTextPreferences.fontStyle = style;
-
-      app.changeTextPreferences.changeTo = targetText;
+  app.findTextPreferences = app.changeTextPreferences = NothingEnum.NOTHING;
+  app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
+  for (var i = 0; i < fonts.length; i++) {
+    for (var j = 0; j < glyphToCharMap.length; j += 2) {
+      var attrs = fonts[i].split(",");
+      app.findTextPreferences.appliedFont = attrs[0];
+      app.findTextPreferences.findWhat = glyphToCharMap[j];
+      app.findTextPreferences.fontStyle = attrs[1];
+      app.changeTextPreferences.changeTo = glyphToCharMap[j+1];
       app.changeTextPreferences.composer = "Adobe World-Ready Paragraph Composer";
       app.changeTextPreferences.appliedFont = "Kokila";
-      app.changeTextPreferences.fontStyle = styleFor[style];
-      
+      app.changeTextPreferences.fontStyle = styleFor(attrs[1]);
       app.activeDocument.changeText();
     }
   }
   // clear settings so the last lookup doesn't interfere with future searches
-  app.findTextPreferences.findWhat = "";
-  app.changeTextPreferences.changeTo = "";
+  app.findTextPreferences = NothingEnum.NOTHING;
+  app.changeTextPreferences = NothingEnum.NOTHING;
 }
-
 function reorderChars() {
   var changeTo = [
-    '([ेैुूं]+)्र' , '्र$1' ,
-    'ं([ाेैुू]+)' , '$1ं' ,
+    'व([ेैुूं़]*)्रη' , 'η्र$1' ,
+    '([ेैुूं़]+)्र' , '्र$1' ,
+    'ं([ाेैुू़]+)' , '$1ं' ,
     '([ाेैुू]+)़' , '़$1' ,
-    'व([ाेैुू]+)η', 'क$1',
+    'व([ाेैुू़]*)η', 'क$1',
+    'प([ाेैुू़]*)η', 'फ$1',
     'ερμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , 'र्$1िं',
     'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)ρμ' , 'र्$1िं',
     'ερ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , 'र्$1ि',
     'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)ρ' , 'र्$1ि',
     'εμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , '$1िं',
     'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , '$1ि',
-    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाेैोौॊॉी]?)ρ[μं]' , 'र्$1ं',  
-    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाेैोौॊॉी]?)ρ' , 'र्$1' ,
+    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉी]?)ρ[μं]' , 'र्$1ं',
+    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉी]?)[μं]ρ' , 'र्$1ं',
+    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉी]?)ρ' , 'र्$1' ,
     'इρ[μं]' , 'ईं',
     'इρ', 'ई',
   ];
   for (var i = 0; i < changeTo.length; i += 2) {
-    app.findGrepPreferences.findWhat = changeTo[i];  
+    app.findChangeGrepOptions.includeMasterPages = true;
+    app.findGrepPreferences.findWhat = changeTo[i];
     app.changeGrepPreferences.changeTo = changeTo[i+1];
     app.activeDocument.changeGrep();
   }
@@ -115,7 +148,6 @@ function convertParagraphStyles(targetFont, targetFontScalingFactor) {
 function convertStyle(style, targetFont, scalingFactor) {
   if (!matches(style.appliedFont.fontFamily))
     return;
-  
   // change font AFTER checking style name. Otherwise style name will change too soon
   if (style.fontStyle.indexOf("Bold") >= 0 && style.fontStyle.indexOf("Italic") >= 0) {
       style.appliedFont = app.fonts.item(targetFont);
@@ -137,7 +169,6 @@ function convertStyle(style, targetFont, scalingFactor) {
   }
   style.composer  = "Adobe World-Ready Paragraph Composer";
 }
-                        
 function clear_log(text) {
   var file = new File("~/Desktop/ID-converters.log");
   file.encoding = "UTF-8";
@@ -145,9 +176,8 @@ function clear_log(text) {
     file.open("w");
     file.seek(0, 2);
     file.close();
-  }  
+  }
 }
-
 function write_to_file(text) {
   var file = new File("~/Desktop/ID-converters.log");
   file.encoding = "UTF-8";
@@ -158,16 +188,29 @@ function write_to_file(text) {
   else {
     file.open("w");
   }
-  var d = new Date();  
+  var d = new Date();
   file.write(d.toString() + ": " + File($.fileName).name + ": " + text + "\n");
   file.close();
 }
 function matches(fontName) {
   return fontName.indexOf("Walkman-Chanakya-") == 0;
-}  
-function convert_to_unicode() {
+}
+function convert_to_unicode(styles) {
   var array_one = new Array(
-    'Q', 'η', 
+    '0', '0',
+    '1', '1',
+    '2', '2',
+    '3', '3',
+    '4', '4',
+    '5', '5',
+    '6', '6',
+    '7', '7',
+    '8', '8',
+    '9', '9',
+    '(', '(',
+    ')', ')',
+    '\t', '\t',
+    'Q', 'η',
     " ", " ", // otherwise spaces remain in the source font
     "I+k12wa", "फ़" ,
     "OkQa", "क़",
@@ -175,7 +218,6 @@ function convert_to_unicode() {
     "ñ" , "॰" ,
     "Q\+Z" , "QZ\+" ,
     "sas" , "sa" ,
-    "aa" , "a" ,
     "¼Z" , "र्द्ध" ,
     "ZZ" , "Z" ,
     "Z", 'ρ',
@@ -196,8 +238,8 @@ function convert_to_unicode() {
     "x+" , "ग़" ,
     "T+" , "ज़्" ,
     "t+" , "ज़" ,
-    "M+" , "ड़" ,
-    "\<+" , "ढ़" ,    
+    "M+" , "ड़" ,
+    "\<+" , "ढ़" ,
     "\;+" , "य़" ,
     "j+" , "ऱ" ,
     "u+" , "ऩ" ,
@@ -249,6 +291,7 @@ function convert_to_unicode() {
     "vk" , "आ" ,
     "v" , "अ" ,
     "b±" , "ईं" ,
+    "±", "ρं",
     "Ã" , "ई" ,
     "bZ" , "ई" ,
     "b" , "इ" ,
@@ -302,6 +345,7 @@ function convert_to_unicode() {
     "Fk" , "थ" ,
     "F" , "थ्" ,
     "f" , "ε",
+    "¯" , "ε",
     "n" , "द" ,
     "\/" , "ध" ,
     "èk" , "ध" ,
@@ -365,7 +409,7 @@ function convert_to_unicode() {
     "Ľ" , "द्ध" ,
     "˝" , "ऋ" ,
     "Ř" , "क्र" ,
-    "Ń" , "कृ" ,    
+    "Ń" , "कृ" ,
     "č" , "ध्" ,
     "Ş" , "्र" ,
     "I+k", "",
@@ -408,7 +452,6 @@ function convert_to_unicode() {
     "¿" , "{" ,
     "À" , "}" ,
     "A" , "।" ,
-    
     "Œ" , "॰" ,
     "]" , "\," ,
     "@" , "\/" ,
@@ -421,9 +464,7 @@ function convert_to_unicode() {
     "अो" , "ओ" ,
     "आॅ" , "ऑ");
   var array_one_length = array_one.length ;
-  
-  for ( input_symbol_idx = 0;   input_symbol_idx < array_one_length-1;    input_symbol_idx = input_symbol_idx + 2 ) {
-    convertFont(array_one[input_symbol_idx], array_one[input_symbol_idx+1]);
-  }   
+  var fonts = getApplicableStyles();
+  convertFont(array_one, styles);
   reorderChars();
  } // end of convert_to_unicode function

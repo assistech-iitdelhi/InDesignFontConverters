@@ -1,5 +1,4 @@
 ﻿(function() {
-  clear_log();
   var stories = app.activeDocument.stories.everyItem().getElements();
   //Load mappings from file--------------------------------------------------------------------------
   var targetFont = "Kokila";
@@ -48,7 +47,7 @@
         // Progress bar -----------------------------------------------------------------------------------
       }         
     }
-    //convertParagraphStyles(targetFont, targetFontScalingFactor);
+    convertParagraphStyles(targetFont, targetFontScalingFactor);
     convertFont();
     // Progress bar -----------------------------------------------------------------------------------
     myProgressWin.close();
@@ -90,6 +89,9 @@ function convertFont() {
   }
 }
 function convertStyle(style, targetFont, scalingFactor) {
+  if (!matches(style.appliedFont.fontFamily))
+    return;
+  
   // change font AFTER checking style name. Otherwise style name will change too soon
   if (style.fontStyle.indexOf("Bold") >= 0 && style.fontStyle.indexOf("Italic") >= 0) {
       style.appliedFont = app.fonts.item(targetFont);
@@ -100,6 +102,9 @@ function convertStyle(style, targetFont, scalingFactor) {
   } else if (style.fontStyle.indexOf("Italic") >= 0) {
       style.appliedFont = app.fonts.item(targetFont);
       style.fontStyle = "Italic";
+  } else if (style.fontStyle.indexOf("Normal") >= 0) {
+      style.appliedFont = app.fonts.item(targetFont);
+      style.fontStyle = "Regular";
   } else {
     style.appliedFont = app.fonts.item(targetFont);
   }
@@ -135,17 +140,8 @@ function textSelected() {
 function matches(fontName) {
   return fontName == "Chanakya";
 }
-function clear_log(text) {
-  var file = new File("~/Desktop/chanakya.log");
-  file.encoding = "UTF-8";
-  if (file.exists) {
-    file.open("w");
-    file.seek(0, 2);
-    file.close();
-  }  
-}
 function write_to_file(text) {
-  var file = new File("~/Desktop/chanakya.log");
+  var file = new File("~/Desktop/ID-converters.log");
   file.encoding = "UTF-8";
   if (file.exists) {
     file.open("e");
