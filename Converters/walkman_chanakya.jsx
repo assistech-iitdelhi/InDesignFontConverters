@@ -1,5 +1,5 @@
 ﻿(function() {
-  write_to_file("BEGIN");
+  var startTime = new Date();
   var stories = app.activeDocument.stories.everyItem().getElements();
   //Load mappings from file--------------------------------------------------------------------------
   var targetFont = "Kokila";
@@ -27,9 +27,10 @@
   } catch (err) {
       alert(err);
   }
-  convert_to_unicode(getApplicableStyles());
+  convert_to_unicode(getStyles());
   scaleFont(targetFontScalingFactor);
-  write_to_file("END");
+  var endTime = new Date();
+  write_to_file("Time Elapsed: " + (endTime.getSeconds() - startTime.getSeconds()) + "s");
 })();
 function scaleFont(factor) {
   app.findChangeTextOptions.includeMasterPages = true;
@@ -59,24 +60,22 @@ function scaleFont(factor) {
     }
   }
 }
-function getApplicableStyles() {
-  var fonts = [];
+function getStyles() {
+  var styles = [];
   var stories = app.activeDocument.stories.everyItem().getElements();
   for (var i = 0; i < stories.length; i++) {
     var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
     for (var j = 0; j < textStyleRanges.length; j++) {
       var styleRange = textStyleRanges[j];
       if (matches(styleRange.appliedFont.fontFamily)) {
-        var styleRange = textStyleRanges[j];
         var str = [styleRange.appliedFont.fontFamily, styleRange.fontStyle, styleRange.pointSize].join(",");
-        if (fonts.indexOf(str) < 0) {
-          fonts.push(str);
-          write_to_file("Adding style: " + str);
+        if (styles.indexOf(str) < 0) {
+          styles.push(str);
         }
       }
     }
   }
-  return fonts;
+  return styles;
 }
 function styleFor(style) {
   if (style.indexOf("Bold") >= 0 && style.indexOf("Italic") >= 0) {
@@ -107,27 +106,39 @@ function convertFont(glyphToCharMap, fonts) {
       app.activeDocument.changeText();
     }
   }
-  // clear settings so the last lookup doesn't interfere with future searches
+  // clear settings so the last lookup doesn't interfere with fut'ure searches
   app.findTextPreferences = NothingEnum.NOTHING;
   app.changeTextPreferences = NothingEnum.NOTHING;
 }
 function reorderChars() {
   var changeTo = [
-    'व([ेैुूं़]*)्रη' , 'η्र$1' ,
-    '([ेैुूं़]+)्र' , '्र$1' ,
-    'ं([ाेैुू़]+)' , '$1ं' ,
-    '([ाेैुू]+)़' , '़$1' ,
-    'व([ाेैुू़]*)η', 'क$1',
-    'प([ाेैुू़]*)η', 'फ$1',
-    'ερμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , 'र्$1िं',
+    // indesign find/change text treats ' and ` as equals
+    '\\x{0060}', 'ृ',
+    '\\x{0027}ा', 'श',
+    '\\x{0027}', 'श्',
+    
+    // nothing irrelevant separates parts of क, फ
+    'व([Ρ्रρ़ाुूेैोौॊॉीृं]*)η', 'क$1',
+    'प([Ρ्रρ़ाुूेैोौॊॉीं]*)η', 'फ$1',
+
+    // vowel signs and vowel modifiers go to end
+    '([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)([ाुूेैोौॊॉीृं]*)Ρ' , '$1्र$2' ,
+    
+    // vowel modifiers after vowel signs
+    'ं([्ाुूेैोौॊॉीृ]+)' , '$1ं' ,
+    
+    // nukta before vowel signs
+    '([्ाुूेैोौॊॉीृ]+)़' , '़$1' ,
+    
     'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)ρμ' , 'र्$1िं',
+    'ερμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , 'र्$1िं',
     'ερ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , 'र्$1ि',
     'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)ρ' , 'र्$1ि',
     'εμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , '$1िं',
     'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , '$1ि',
-    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉी]?)ρ[μं]' , 'र्$1ं',
-    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉी]?)[μं]ρ' , 'र्$1ं',
-    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉी]?)ρ' , 'र्$1' ,
+    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉीृ]?)ρ[μं]' , 'र्$1ं',
+    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉीृ]?)[μं]ρ' , 'र्$1ं',
+    '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉीृ]?)ρ' , 'र्$1' ,
     'इρ[μं]' , 'ईं',
     'इρ', 'ई',
   ];
@@ -376,8 +387,7 @@ function convert_to_unicode(styles) {
     "o" , "व" ,
     "Ok" , "व" ,
     "O" , "व्" ,
-    "\'k" , "श" ,
-    "\'" , "श्" ,
+
     "Ük" , "श" ,
     "Ü" , "श्" ,
     "\"k" , "ष" ,
@@ -389,7 +399,7 @@ function convert_to_unicode(styles) {
     "L" , "स्" ,
     "g" , "ह" ,
     "È" , "ीं" ,
-    "z" , "्र" ,
+    "z" , "Ρ" ,
     "Ì" , "द्द" ,
     "Í" , "ऋ" ,
     "Î" , "ट्ठ" ,
@@ -411,7 +421,7 @@ function convert_to_unicode(styles) {
     "Ř" , "क्र" ,
     "Ń" , "कृ" ,
     "č" , "ध्" ,
-    "Ş" , "्र" ,
+    "Ş" , "Ρ" ,
     "I+k", "",
     "\‚" , "ॉ" ,
     "¨" , "ो" ,
@@ -422,7 +432,7 @@ function convert_to_unicode(styles) {
     "h" , "ी" ,
     "q" , "ु" ,
     "w" , "ू" ,
-    "\`" , "ृ" ,
+    //"`" , "ृ" , use grep find/change
     "s" , "े" ,
     "¢" , "े" ,
     "S" , "ै" ,
@@ -458,13 +468,16 @@ function convert_to_unicode(styles) {
     " ः" , ":" ,
     "~" , "्" ,
     "्ा" ,    "" ,
+    "़्ा" ,    "़" ,
+    "़्ो" ,    "़े" ,
+    "्ौ" ,    "़ै" ,
     "ाे" , "ो" ,
     "ाॅ" , "ॉ" ,
     "अौ" , "औ" ,
     "अो" , "ओ" ,
     "आॅ" , "ऑ");
   var array_one_length = array_one.length ;
-  var fonts = getApplicableStyles();
+  var fonts = getStyles();
   convertFont(array_one, styles);
   reorderChars();
  } // end of convert_to_unicode function
