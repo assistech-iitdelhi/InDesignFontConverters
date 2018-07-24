@@ -4,21 +4,21 @@
   var targetFont = "Kokila";
   var targetFontScalingFactor = 1.07;
   try {
-      var fileName = File(app.activeScript.fullName).parent.fsName + "\\mappings.csv";
-      var file = new File(fileName)
-      file.open("r");
-      while(!file.eof){
-          row=file.readln();
-          cols = row.split(",");
-          if (matches(cols[0])) {
-            targetFont = cols[1];
-            targetFontScalingFactor = cols[2];
-            break;
-          }
-      }
-      file.close();
+    var fileName = File(app.activeScript.fullName).parent.fsName + "\\mappings.csv";
+    var file = new File(fileName)
+    file.open("r");
+    while(!file.eof){
+        row=file.readln();
+        cols = row.split(",");
+        if (matches(cols[0])) {
+           targetFont = cols[1];
+           targetFontScalingFactor = cols[2];
+           break;
+        }
+    }
+    file.close();
   } catch (err) {
-      alert(err);
+    alert(err);
   }
   //Mappings loaded----------------------------------------------------------------------------------
   // Progress bar -----------------------------------------------------------------------------------
@@ -39,9 +39,9 @@
         
         if (matches(myText.appliedFont.fontFamily)) {
           convert(myText, targetFont, targetFontScalingFactor);          
-          if (myText.appliedParagraphStyle.name == "[No Paragraph Style]") {
+          //if (myText.appliedParagraphStyle.name == "[No Paragraph Style]") {
             convertStyle(myText, targetFont, targetFontScalingFactor);
-          }
+          //}
         } else {
           write_to_file("Skipping textStyleRange of " + myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
         }
@@ -52,20 +52,20 @@
       }         
     }
     convertParagraphStyles(targetFont, targetFontScalingFactor);
-    convertFont();
+    convertFont(targetFont);
     // Progress bar -----------------------------------------------------------------------------------
     myProgressWin.close();
     // Progress bar -----------------------------------------------------------------------------------  
   }  
 })();
-function convertFont() {
+function convertFont(targetFont) {
   for (var i = 0; i < app.activeDocument.fonts.length; i++) {
     var fontFamily = app.activeDocument.fonts[i].fontFamily;
     if (matches(fontFamily))     {
       app.findTextPreferences = NothingEnum.nothing;
       app.changeTextPreferences = NothingEnum.nothing;
       app.findTextPreferences.appliedFont = fontFamily;
-      app.changeTextPreferences.appliedFont = "Kokila";
+      app.changeTextPreferences.appliedFont = targetFont;
       app.activeDocument.changeText();
     }
   }
@@ -225,8 +225,8 @@ function convert_to_unicode(legacy_txt) {
     "ç" , "प्र" ,
     "Á" , "प्र" ,
     "xz" , "ग्र" ,
-    "#" , "रु" ,
-    ":" , "रू" ,
+      "#" , "रु" ,
+      ":" , "रू" ,
     "v‚" , "ऑ" ,
     "vks" , "ओ" ,
     "vkS" , "औ" ,
