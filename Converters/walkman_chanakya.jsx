@@ -89,21 +89,19 @@ function styleFor(style) {
   }
 }
 function convertFont(glyphToCharMap, fonts) {
-  app.findChangeTextOptions.caseSensitive = true;
-  app.findChangeTextOptions.includeMasterPages = true;
-  app.findTextPreferences = app.changeTextPreferences = NothingEnum.NOTHING;
+  app.findChangeGrepOptions.includeMasterPages = true;
   app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
   for (var i = 0; i < fonts.length; i++) {
     for (var j = 0; j < glyphToCharMap.length; j += 2) {
       var attrs = fonts[i].split(",");
-      app.findTextPreferences.appliedFont = attrs[0];
-      app.findTextPreferences.findWhat = glyphToCharMap[j];
-      app.findTextPreferences.fontStyle = attrs[1];
-      app.changeTextPreferences.changeTo = glyphToCharMap[j+1];
-      app.changeTextPreferences.composer = "Adobe World-Ready Paragraph Composer";
-      app.changeTextPreferences.appliedFont = "Kokila";
-      app.changeTextPreferences.fontStyle = styleFor(attrs[1]);
-      app.activeDocument.changeText();
+      app.findGrepPreferences.appliedFont = attrs[0];
+      app.findGrepPreferences.findWhat = glyphToCharMap[j];
+      app.findGrepPreferences.fontStyle = attrs[1];
+      app.changeGrepPreferences.changeTo = glyphToCharMap[j+1];
+      app.changeGrepPreferences.composer = "Adobe World-Ready Paragraph Composer";
+      app.changeGrepPreferences.appliedFont = "Kokila";
+      app.changeGrepPreferences.fontStyle = styleFor(attrs[1]);
+      app.activeDocument.changeGrep();
     }
   }
   // clear settings so the last lookup doesn't interfere with fut'ure searches
@@ -113,16 +111,14 @@ function convertFont(glyphToCharMap, fonts) {
 function reorderChars() {
   var changeTo = [
     // indesign find/change text treats ' and ` as equals
-    '\\x{0060}', 'ृ',
-    '\\x{0027}ा', 'श',
-    '\\x{0027}', 'श्',
-    
     // nothing irrelevant separates parts of क, फ
-    'व([Ρ्रρ़ाुूेैोौॊॉीृं]*)η', 'क$1',
-    'प([Ρ्रρ़ाुूेैोौॊॉीं]*)η', 'फ$1',
+    'व([Ρ्रρ़ाुूेैोौॊॉीृंँ]*)η', 'क$1',
+    'प([Ρ्रρ़ाुूेैोौॊॉींँ]*)η', 'फ$1',
+    'उ([Ρ्रρ़ाुूेैोौॊॉींँ]*)η', 'ऊ$1',
+    
 
     // vowel signs and vowel modifiers go to end
-    '([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)([ाुूेैोौॊॉीृं]*)Ρ' , '$1्र$2' ,
+    '([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)([ाुूेैोौॊॉीृंँ]*)Ρ' , '$1्र$2' ,
     
     // vowel modifiers after vowel signs
     'ं([्ाुूेैोौॊॉीृ]+)' , '$1ं' ,
@@ -142,6 +138,7 @@ function reorderChars() {
     'इρ[μं]' , 'ईं',
     'इρ', 'ई',
   ];
+  app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
   for (var i = 0; i < changeTo.length; i += 2) {
     app.findChangeGrepOptions.includeMasterPages = true;
     app.findGrepPreferences.findWhat = changeTo[i];
@@ -223,11 +220,14 @@ function convert_to_unicode(styles) {
     '\t', '\t',
     'Q', 'η',
     " ", " ", // otherwise spaces remain in the source font
-    "I+k12wa", "फ़" ,
+    "I\\x{002B}k12wa", "फ़" ,
     "OkQa", "क़",
     "jQ", "रु",
     "ñ" , "॰" ,
-    "Q\+Z" , "QZ\+" ,
+    '\\x{0060}', 'ृ',
+    '\\x{0027}k', 'श',
+    '\\x{0027}', 'श्',
+    "Q\\x{002B}Z" , "QZ\\x{002B}" ,
     "sas" , "sa" ,
     "¼Z" , "र्द्ध" ,
     "ZZ" , "Z" ,
@@ -242,18 +242,18 @@ function convert_to_unicode(styles) {
     "‰" , "७" ,
     "Š" , "८" ,
     "\‹" , "९" ,
-    "¶+" , "फ़्" ,
-    "d+" , "क़" ,
-    "[+k" , "ख़" ,
-    "[+" , "ख़्" ,
-    "x+" , "ग़" ,
-    "T+" , "ज़्" ,
-    "t+" , "ज़" ,
-    "M+" , "ड़" ,
-    "\<+" , "ढ़" ,
-    "\;+" , "य़" ,
-    "j+" , "ऱ" ,
-    "u+" , "ऩ" ,
+    "¶\\x{002B}" , "फ़्" ,
+    "d\\x{002B}" , "क़" ,
+    "\\x{005B}\\x{002B}k" , "ख़" ,
+    "\\x{005B}\\x{002B}" , "ख़्" ,
+    "x\\x{002B}" , "ग़" ,
+    "T\\x{002B}" , "ज़्" ,
+    "t\\x{002B}" , "ज़" ,
+    "M\\x{002B}" , "ड़" ,
+    "<\\x{002B}" , "ढ़" ,
+    ";\\x{002B}" , "य़" ,
+    "j\\x{002B}" , "ऱ" ,
+    "u\\x{002B}" , "ऩ" ,
     "Ùk" , "त्त" ,
     "Ù" , "त्त्" ,
     "ä" , "क्त" ,
@@ -317,14 +317,14 @@ function convert_to_unicode(styles) {
     "Dk" , "क" ,
     "D" , "क्" ,
     "£" , "र्f" ,
-    "[k" , "ख" ,
-    "[" , "ख्" ,
+    "\\x{005B}k" , "ख" ,
+    "\\x{005B}" , "ख्" ,
     "x" , "ग" ,
     "Xk" , "ग" ,
     "X" , "ग्" ,
     "Ä" , "घ" ,
-    "?k" , "घ" ,
-    "?" , "घ्" ,
+    "\\x{003F}k" , "घ" ,
+    "\\x{003F}" , "घ्" ,
     "³" , "ङ" ,
     "p" , "च" ,
     "Pk" , "च" ,
@@ -344,12 +344,12 @@ function convert_to_unicode(styles) {
     "B" , "ठ" ,
     "ì" , "ड्ड" ,
     "ï" , "ड्ढ" ,
-    "M+" , "ड़" ,
-    "\<+" , "ढ़" ,
+    "M\\x{002B}" , "ड़" ,
+    "<\\x{002B}" , "ढ़" ,
     "M" , "ड" ,
-    "\<" , "ढ" ,
-    "\.k" , "ण" ,
-    "\." , "ण्" ,
+    "<" , "ढ" ,
+    "\\x{002E}k" , "ण" ,
+    "\\x{002E}" , "ण्" ,
     "r" , "त" ,
     "Rk" , "त" ,
     "R" , "त्" ,
@@ -422,7 +422,7 @@ function convert_to_unicode(styles) {
     "Ń" , "कृ" ,
     "č" , "ध्" ,
     "Ş" , "Ρ" ,
-    "I+k", "",
+    "I\\x{002B}k", "",
     "\‚" , "ॉ" ,
     "¨" , "ो" ,
     "ks" , "ो" ,
@@ -445,7 +445,7 @@ function convert_to_unicode(styles) {
     "·" , "ऽ" ,
     "∙" , "ऽ" ,
     "·" , "ऽ" ,
-    "+" , "़" ,
+    "\\x{002B}" , "़" ,
     "\\" , "?" ,
     "\‘" , "\"" ,
     "\’" , "\"" ,
@@ -473,9 +473,11 @@ function convert_to_unicode(styles) {
     "्ौ" ,    "़ै" ,
     "ाे" , "ो" ,
     "ाॅ" , "ॉ" ,
+    "ाॆ", "ॆ",
     "अौ" , "औ" ,
     "अो" , "ओ" ,
-    "आॅ" , "ऑ");
+    "आॅ" , "ऑ",
+    "आॆ", "ऒ");
   var array_one_length = array_one.length ;
   var fonts = getStyles();
   convertFont(array_one, styles);
