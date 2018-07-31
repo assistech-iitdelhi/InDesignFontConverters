@@ -78,6 +78,7 @@ function getStyles() {
   return styles;
 }
 function styleFor(style) {
+  // Smart Delhi font has a different target style, Normal
   if (style.indexOf("Bold") >= 0 && style.indexOf("Italic") >= 0) {
       return "Bold Italic";
   } else if (style.indexOf("Bold") >= 0) {
@@ -215,8 +216,8 @@ function convert_to_unicode(styles) {
     '7', '7',
     '8', '8',
     '9', '9',
-    '(', '(',
-    ')', ')',
+    '\\x{0028}', '(',
+    '\\x{0029}', ')',
     '\t', '\t',
     'Q', 'η',
     " ", " ", // otherwise spaces remain in the source font
@@ -270,7 +271,7 @@ function convert_to_unicode(styles) {
     "º" , "ह्" ,
     "í" , "द्द" ,
     "\{k" , "क्ष" ,
-    "\{" , "क्ष्" ,
+    "\\x{007B}" , "क्ष्" ,
     "f\=" , "त्रि" ,
     "\=k" , "त्र" ,
     "\«" , "त्र्" ,
@@ -279,9 +280,9 @@ function convert_to_unicode(styles) {
     "Bî" , "ठ्य" ,
     "Mî" , "ड्य" ,
     "\<î" , "ढ्य" ,
-    "|" , "द्य" ,
+    "\\x{007C}" , "द्य" ,
     "K" , "ज्ञ" ,
-    "}" , "द्व" ,
+    "\\x{007D}" , "द्व" ,
     "J" , "श्र" ,
     "Vª" , "ट्र" ,
     "Mª" , "ड्र" ,
