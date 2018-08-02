@@ -27,10 +27,16 @@
   } catch (err) {
       alert(err);
   }
+  write_to_file("BEGIN: convert_to_unicode()");
   convert_to_unicode(getStyles());
+  write_to_file("END: convert_to_unicode()");
+  
+  write_to_file("BEGIN: scaleFont()");
   scaleFont(targetFontScalingFactor);
+  write_to_file("END: scaleFont()");
+  
   var endTime = new Date();
-  write_to_file("Time Elapsed: " + (endTime.getSeconds() - startTime.getSeconds()) + "s");
+  write_to_file("Time Elapsed: " + (endTime.getTime() - startTime.getTime()) + "s");
 })();
 function scaleFont(factor) {
   app.findChangeTextOptions.includeMasterPages = true;
@@ -117,7 +123,6 @@ function reorderChars() {
     'प([Ρ्रρ़ाुूेैोौॊॉींँ]*)η', 'फ$1',
     'उ([Ρ्रρ़ाुूेैोौॊॉींँ]*)η', 'ऊ$1',
     
-
     // vowel signs and vowel modifiers go to end
     '([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)([ाुूेैोौॊॉीृंँ]*)Ρ' , '$1्र$2' ,
     
@@ -473,14 +478,18 @@ function convert_to_unicode(styles) {
     "़्ो" ,    "़े" ,
     "्ौ" ,    "़ै" ,
     "ाे" , "ो" ,
-    "ाॅ" , "ॉ" ,
     "ाॆ", "ॆ",
+    "ाॅ" , "ॉ" ,
     "अौ" , "औ" ,
     "अो" , "ओ" ,
     "आॅ" , "ऑ",
     "आॆ", "ऒ");
   var array_one_length = array_one.length ;
   var fonts = getStyles();
+  write_to_file("BEGIN: convertFont()");
   convertFont(array_one, styles);
+  write_to_file("END: convertFont()");
+  write_to_file("BEGIN: reorderChars()");
   reorderChars();
+  write_to_file("END: reorderChars()");
  } // end of convert_to_unicode function
