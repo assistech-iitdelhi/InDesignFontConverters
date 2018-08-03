@@ -1,7 +1,7 @@
 ﻿(function() {
   var stories = app.activeDocument.stories.everyItem().getElements();
   //Load mappings from file--------------------------------------------------------------------------
-  var targetFont = "Kokila";
+  var targetFont = "Smart Delhi Hindi";
   var targetFontScalingFactor = 1.07;
   try {
       var fileName = File(app.activeScript.fullName).parent.fsName + "\\mappings.csv";
@@ -52,21 +52,21 @@
       }         
     }
     convertParagraphStyles(targetFont, targetFontScalingFactor);
-    convertFont();
+    convertFont(targetFont);
     // Progress bar -----------------------------------------------------------------------------------
     myProgressWin.close();
     // Progress bar -----------------------------------------------------------------------------------  
     
   }  
 })();
-function convertFont() {
+function convertFont(targetFont) {
   for (var i = 0; i < app.activeDocument.fonts.length; i++) {
     var fontFamily = app.activeDocument.fonts[i].fontFamily;
     if (matches(fontFamily))     {
       app.findTextPreferences = NothingEnum.nothing;
       app.changeTextPreferences = NothingEnum.nothing;
       app.findTextPreferences.appliedFont = fontFamily;
-      app.changeTextPreferences.appliedFont = "Kokila";
+      app.changeTextPreferences.appliedFont = targetFont;
       app.activeDocument.changeText();
     }
   }
