@@ -1,7 +1,7 @@
 ﻿(function() {
   var stories = app.activeDocument.stories.everyItem().getElements();
   //Load mappings from file--------------------------------------------------------------------------
-  var targetFont = "Kokila";
+  var targetFont = "Smart Delhi Hindi";
   var targetFontScalingFactor = 1.07;
   try {
       var fileName = File(app.activeScript.fullName).parent.fsName + "\\mappings.csv";
@@ -36,7 +36,7 @@
       var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
       for (var j = textStyleRanges.length-1; j >= 0; j--) {
         var myText = textStyleRanges[j];
-        write_to_file(myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
+        
         if (matches(myText.appliedFont.fontFamily)) {
           convert(myText, targetFont, targetFontScalingFactor);
           convertStyle(myText, targetFont, targetFontScalingFactor);
@@ -48,45 +48,39 @@
       }         
     }
     convertParagraphStyles(targetFont, targetFontScalingFactor);
-    convertFont();
+    convertFont(targetFont);
     // Progress bar -----------------------------------------------------------------------------------
     myProgressWin.close();
     // Progress bar -----------------------------------------------------------------------------------  
     
   }  
 })();
-function convertParagraphStyles(targetFont, targetFontScalingFactor) {
-	var paraStyles = app.activeDocument.paragraphStyles.everyItem().getElements();
-  // go upto 1 as 0 is the root style and has no properties
-  for (var i = paraStyles.length-1; i > 0; i--) {
-    try {
-      paraStyles[i].composer = "Adobe World-Ready Paragraph Composer";
-    } catch (err) {
-      write_to_file("Failed to set world-ready for " + paraStyles[i].name);
-    }
-    convertStyle(paraStyles[i], targetFont, targetFontScalingFactor);
-  }
-}
-function convert(txt, font, scalingFactor) {
-  var converted = convert_to_unicode(txt.contents);
-  if (converted != undefined) {
-    txt.pointSize = Math.round(txt.pointSize*scalingFactor);
-    txt.contents = converted;
-  }
-  return converted;
-}
-
-function convertFont() {
+function convertFont(targetFont) {
   for (var i = 0; i < app.activeDocument.fonts.length; i++) {
     var fontFamily = app.activeDocument.fonts[i].fontFamily;
     if (matches(fontFamily))     {
       app.findTextPreferences = NothingEnum.nothing;
       app.changeTextPreferences = NothingEnum.nothing;
       app.findTextPreferences.appliedFont = fontFamily;
-      app.changeTextPreferences.appliedFont = "Kokila";
+      app.changeTextPreferences.appliedFont = targetFont;
       app.activeDocument.changeText();
     }
   }
+}
+function convertParagraphStyles(targetFont, targetFontScalingFactor) {
+	var paraStyles = app.activeDocument.paragraphStyles.everyItem().getElements();
+  // go upto 1 as 0 is the root style and has no properties
+  for (var i = paraStyles.length-1; i > 0; i--) {
+    convertStyle(paraStyles[i], targetFont, targetFontScalingFactor);
+  }
+}
+function convert(txt, font, scalingFactor) {
+  var converted = convert_to_unicode(txt.contents);
+  if (converted != undefined) {
+    //txt.pointSize = Math.round(txt.pointSize*scalingFactor);
+    txt.contents = converted;
+  }
+  return converted;
 }
 function convertStyle(style, targetFont, scalingFactor) {
   if (!matches(style.appliedFont.fontFamily))
@@ -150,25 +144,12 @@ function write_to_file(text) {
   else {
     file.open("w");
   }
-  var d = new Date();
-  file.write(d.toString() + ":" + text + "\n");
+  var d = new Date();  
+  file.write(d.toString() + ": " + File($.fileName).name + ": " + text + "\n");
   file.close();
 }
-function write_styles_to_file(textStyleRanges) {
-  write_to_file("********************* BEGIN 2 *********************");
-  for (var k = textStyleRanges.length-1; k >= 0; k--) {
-    var tmpText = textStyleRanges[k];
-    write_to_file(tmpText.appliedFont.fontFamily + ", "
-                  + tmpText.appliedCharacterStyle.name + ", "
-                  + tmpText.appliedParagraphStyle.name + ", "
-                  + tmpText.fontStyle + ", "
-                  + tmpText.contents);
-  }
-  write_to_file("*********************** END 2 **********************");
-}
+
 function convert_to_unicode(legacy_txt) {
-  write_to_file(legacy_txt);
-  write_to_file(escape(legacy_txt));
   var array_one = new Array(
     '\xf8',
     '\xd2\xd2',
@@ -291,7 +272,6 @@ function convert_to_unicode(legacy_txt) {
     processed_text += modified_substring ;
     
   }
-  write_to_file(processed_text);
   return processed_text;
   function Replace_Symbols( )
   {
