@@ -1,0 +1,114 @@
+text	{findWhat:"बप़्ाQर्"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"बर्फ़"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	बर्फ़
+text	{findWhat:"हिड्डयों"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"हड्डियों"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	हड्डियों
+text	{findWhat:"_"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:";"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	;
+text	{findWhat:"बिलि्ंडग"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"बिल्डिंग"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	बिल्डिंग
+text	{findWhat:"इक;ा"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"इकट्ठा"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	इकट्ठा
+text	{findWhat:"रिलीप़्ाQवर्कर"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"रिलीफ़वर्कर"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	रिलीफ़वर्कर
+text	{findWhat:"कॉप़्ाQी"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"कॉफ़ी"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	कॉफ़ी
+text	{findWhat:"दफ्ऱतर"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"दफ़्तर"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	दफ़्तर
+text	{findWhat:"फ्ऱलैट"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"फ़्लैट"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	फ़्लैट
+text	{findWhat:"ि.फल्म"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"फ़िल्म"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	फ़िल्म
+text	{findWhat:"रिलीप़्ाQ"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"रिलीफ़"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	रिलीफ़
+text	{findWhat:"टेलीप़्ाQोन"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"टेलीफ़ोन"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	टेलीफ़ोन
+text	{findWhat:"टेलीप़्ाQोन"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"टेलीफ़ोन"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	टेलीफ़ोन
+text	{findWhat:"सप़्ाQेद"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"सफ़ेद"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	सफ़ेद
+text	{findWhat:"सप़्ाQेद"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"सफ़ेद"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	सफ़ेद
+text	{findWhat:"तरप़्ाQ"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"तरफ़"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	तरफ़
+text	{findWhat:"अ;ारह"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"अट्ठारह"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	अट्ठारह
+text	{findWhat:"पि़्ाQक्र"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"फ़िक्र"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	फ़िक्र
+text	{findWhat:"प़्ाQौरन"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"फ़ौरन"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	फ़ौरन
+text	{findWhat:"प़्ाQरमाबरदार"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"प़्ाQरमाबरदार"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	प़्ाQरमाबरदार
+text	{findWhat:"काप़्ाQी"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"काफ़ी"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	काफ़ी
+text	{findWhat:"प़्ाQर"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"फ़र"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	फ़र
+text	{findWhat:"ज़्यादा"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"ज़्यादा"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	ज़्यादा
+text	{findWhat:"प़्ाQ"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"फ़"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	फ़
+text	{findWhat:"पि़्ाQ"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"फ़ि"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	फ़ि
+text	{findWhat:"पि़्ाQ"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"फ़ि"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	फ़ि
+text	{findWhat:"पQी"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"फी"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	फी
+text	{findWhat:"मज़र्"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"मर्ज़"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	मर्ज़
+text	{findWhat:"वQे"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"के"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	के
+text	{findWhat:"ज़्"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"ज़्"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	ज़्
+text	{findWhat:"फ्ऱफ़ो"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"फ़्फ़ो"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	फ़्फ़ो
+text	{findWhat:"अज़र्"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"अर्ज़"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	अर्ज़
+text	{findWhat:"मज़ीर्"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"मर्ज़ी"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	मर्ज़ी
+text	{findWhat:"दफ़्तर"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"दफ़्तर"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	दफ़्तर
+text	{findWhat:"सिफ़र्"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"सिर्फ़"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	सिर्फ़
+text	{findWhat:"श्ां"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"शं"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	शं
+text	{findWhat:"टेªन"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"ट्रेन"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	ट्रेन
+text	{findWhat:"कितु"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"किंतु"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	किंतु
+text	{findWhat:"स.फेद"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"सफ़ेद"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	सफ़ेद
+text	{findWhat:"चि;ी"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"चिट्ठी"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	चिट्ठी
+text	{findWhat:"इक;ी"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"इकट्ठी"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	इकट्ठी
+text	{findWhat:"मुफ्रत"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"मुफ़्त"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	मुफ़्त
+text	{findWhat:"गफ्रस"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"गफ्स"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	गफ्स
+text	{findWhat:"पुलि्ंलग"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"पुल्लिंग"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	पुल्लिंग
+text	{findWhat:"अ.फसोस"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"अफ़सोस"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	अफ़सोस
+text	{findWhat:"हिदी"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"हिंदी"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	हिंदी
+text	{findWhat:"रिकॉर्डिर्ंग"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"रिकॉर्डिंग"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	रिकॉर्डिंग
+text	{findWhat:"द्र्रि"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"द्रि"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	द्रि
+text	{findWhat:"Qी"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"की"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	की
+text	{findWhat:"वुQ"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"कु"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	कु
+text	{findWhat:"थिर््ा"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"र्थि"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	र्थि
+text	{findWhat:"×ा"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"ञ"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	ञ
+text	{findWhat:"पुनमुर्द्रण"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"पुनर्मुद्रण"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	पुनर्मुद्रण
+text	{findWhat:"स्ां"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"सं"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	सं
+text	{findWhat:"संदभोर्ं"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"संदर्भों"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	संदर्भों
+text	{findWhat:"वेQ"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"के"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	के
+text	{findWhat:"अथोर्ं"}	{changeTo:"α"}	{includeFootnotes:true,includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}
+text	{findWhat:"α"}	{changeTo:"अर्थों"}	{includeFootnotes:true, includeMasterPages:true, includeHiddenLayers:true, wholeWord:false}	अर्थों
