@@ -425,8 +425,8 @@ function walkman_chanakya() {
     "ß" , "\”" ,
     "¾" , "=" ,
     "-" , "." , // placed above the & conversion below to prevent '&' -> '-' -> '.'
-    "&" , "-" ,
-    "µ" , "–" ,
+    "&" , "-" ,					//hyphen
+    "µ" , "\\x{2013}" , //en-dash
     "¿" , "{" ,
     "À" , "}" ,
     "A" , "।" ,
