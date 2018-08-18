@@ -7,7 +7,7 @@
   }
 }
 (function (){  
-  var fileName =  "~/words.txt";
+  var fileName =  "~/Desktop/words.txt";
   var all_words = [];
   var contents;
   var file = new File(fileName);  
