@@ -79,6 +79,15 @@ function reorderChars() {
     '(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉीृ]?)ρ' , 'र्$1' ,
     'इρ[μं]' , 'ईं',
     'इρ', 'ई',
+		// replace by nukta containing counterparts as the font handles them better
+		'क़',	'\\x{0958}',
+		'ख़',	'\\x{0959}',
+		'ग़',	'\\x{095A}',
+		'ज़',	'\\x{095B}',
+		'ड़',	'\\x{095C}',
+		'ढ़',	'\\x{095D}',
+		'फ़',	'\\x{095E}',
+		'य़',	'\\x{095F}',
   ];
   app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
   app.findChangeGrepOptions.includeMasterPages = true;
@@ -117,7 +126,6 @@ var iitd = {
 		'\\x{0027}', 'श्',
 		"Q\\x{002B}Z" , "QZ\\x{002B}" ,
 		"\\x{005F}", ";",
-		"sas" , "sa" ,
 		"¼Z" , "र्द्ध" ,
 		"ZZ" , "Z" ,
 		"Z", 'ρ',
