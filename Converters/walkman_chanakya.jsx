@@ -15,7 +15,8 @@ function setupEssentials() {
   }
 }
 
-function convertToUnicode(srcFont, srcStyle, glyphToCharMap, tgtFont, tgtStyle, scalingFactor) {  
+function convertToUnicode(srcFont, srcStyle, glyphToCharMap, tgtFont, tgtStyle, scalingFactor) {
+		// TODO: log remaining unconverted text in known fonts
 	function change(ptSize) {
 		app.findGrepPreferences.appliedFont = srcFont;      
 		app.findGrepPreferences.fontStyle = srcStyle;
@@ -63,10 +64,13 @@ function reorderChars() {
     '([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)([ाुूेैोौॊॉीृंँ]*)Ρ' , '$1्र$2' ,
     
     // vowel modifiers after vowel signs
-    '[(ंँ])([्ाुूेैोौॊॉीृ]+)' , '$2$1' ,
+    '([ंँ])([्ाुूेैोौॊॉीृ]+)' , '$2$1' ,
     
     // nukta before vowel signs
     '([्ाुूेैोौॊॉीृ]+)़' , '़$1' ,
+		
+		// remove duplicate vowel modifiers
+		'ंं*' , 'ं' ,
     
     'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)ρμ' , 'र्$1िं',
     'ερμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , 'र्$1िं',
@@ -102,9 +106,15 @@ function reorderChars() {
 }
 
 var iitd = {
+	// TODO: make the mappings independent of order so changing is easy.
+	// TODO: use just one of hex codes for the source so lookups are faster
+	// TODO: review these mappings with the font table
+	// TODO: move to external files so comparison is easy
+	// TODO: check NCERT google spreadsheet to ensure all covered, log misplaced vowel signs
 	'walkman': [
 		'\\x{0024}', '+',
 		'Â', 'न्न',
+		'Õ', 'य्',
 	'\\s', '$0',
 		'0', '0',
 		'1', '1',
@@ -299,7 +309,7 @@ var iitd = {
 		"Lk" , "स" ,
 		"L" , "स्" ,
 		"g" , "ह" ,
-		"È" , "ीं" ,
+		"È" , "ह्ल" ,
 		"z" , "Ρ" ,
 		"Ì" , "द्द" ,
 		"Í" , "ऋ" ,
