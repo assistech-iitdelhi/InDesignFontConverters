@@ -1,5 +1,5 @@
-﻿function main() {
-	setupEssentials(); 
+﻿setupEssentials(); 
+function main() {
 	for (var i = 0; i < iitd.fonts.length; i++) {
 		convertToUnicode.apply(null, iitd.fonts[i]);
 		reorderChars();
@@ -11,6 +11,17 @@ function setupEssentials() {
 		Array.prototype.indexOf = function (el) {
 			for(var i = 0; i < this.length; i++) if(el === this[i]) return i;
 			return -1;
+		}
+	}
+	if (typeof Array.prototype.filter != "function") {
+		Array.prototype.filter = function (func) {
+			var a = [];
+			for(var i = 0; i < this.length; i++) {
+				if (func(this[i])) {
+					a.push(this[i]);
+				}
+			}		
+			return a;
 		}
 	}
 }
@@ -63,6 +74,7 @@ function reorderChars() {
 		'प([Ρρ्ाुूेैोौॊॉींँ]*)η', 'फ$1',
 		'प़([Ρρ्ाुूेैोौॊॉींँ]*)η', 'फ़$1',
 		'उ([Ρρ़ाुूेैोौॊॉींँ]*)η', 'ऊ$1',
+		'र([़ंँ]*)η', 'रु$1',
     
 		// vowel signs and vowel modifiers go to end
 		'([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)([ाुूेैोौॊॉीृंँ]*)Ρ' , '$1्र$2' ,
@@ -126,11 +138,22 @@ function read_tsv(filepath) {
 	return a;
 }
 // TODO: convert each word to greek letter and back to remove tracked chars	
-// TODO: check NCERT google spreadsheet to ensure all covered, log remaining intermediate chars
+// TODO: use NCERT google spreadsheet to ensure all covered, log remaining intermediate chars
+// TODO: find Nukta containing chars and replace by themselves using intermediate chars
 // TODO: filter fonts not used in document
 // TODO: sort the mappings so no targets are among the sources
 var iitd = {};
 iitd.fonts = read_tsv(app.activeScript.path + "/fonts.tsv");
+iitd.fonts = iitd.fonts.filter(function(e) {
+	var docFonts = app.activeDocument.fonts;
+	for (var i = 0; i < docFonts.count(); i++) {
+		if (docFonts[i].fontFamily == e[0]) {
+			return true;
+		}
+	}
+	return false;
+});
+alert(iitd.fonts);
 for (var i = 0; i < iitd.fonts.length; i++) {
 	var filename = iitd.fonts[i][2];
 	var firstname = iitd.fonts[i][2].split('.')[0];
