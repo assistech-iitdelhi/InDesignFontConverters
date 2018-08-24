@@ -12,15 +12,16 @@
 Sankalan Pal Chowdhury et al.
 
 ## MENTORS
-1. Mr. Dipendra Manocha
-2. Prof. M. Balakrishnan
-3. Akashdeep Bansal
+1. Mr. Dipendra Manocha, Saksham
+2. Prof. M. Balakrishnan, IIT-D
+3. Akashdeep Bansal, Research Scholar (PhD), IIT-D
 
 ## THANKS
 1. [वैज्ञानिक एवं तकनीकी हिन्दी समूह](https://sites.google.com/site/technicalhindi/about/_draft_post) for converters
 2. Josh Voigts for suggesting fixes for unconverted portions on SO [here](https://stackoverflow.com/questions/49429634/indesign-text-modification-script-skips-content) and [here](https://stackoverflow.com/questions/49320918/indesign-text-modification-script-skips-paragraphs)
 3. Kasyan Servetsky for the [batch processor](https://forums.adobe.com/message/10286549#10286549). Get latest versions [here](http://kasyan.ho.com.ua/batch_process_scripts/batch_process_scripts.html) and [here](http://kasyan.ho.com.ua/indesign/2018/batch_resave_pagemaker_files.html)
-4. Abdul Wazid for feedback
+4. Mr. Sridhar Madurai of Smart Solutions, for suggestions for improvements
+5. CIET Team for using the scripts. 
 
 ## RESOURCES
 1. [Scripting InDesign](http://cssdk.s3-website-us-east-1.amazonaws.com/sdk/1.0/docs/WebHelp/app_notes/id_scripting.htm)
