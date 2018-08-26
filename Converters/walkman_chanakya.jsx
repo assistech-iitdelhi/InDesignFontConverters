@@ -139,8 +139,7 @@ function read_tsv(filepath) {
 }
 // TODO: convert each word to greek letter and back to remove tracked chars	
 // TODO: use NCERT google spreadsheet to ensure all covered, log remaining intermediate chars
-// TODO: find Nukta containing chars and replace by themselves using intermediate chars
-// TODO: filter fonts not used in document
+// TODO: find Nukta char words and replace by themselves using intermediate chars
 // TODO: sort the mappings so no targets are among the sources
 var iitd = {};
 iitd.fonts = read_tsv(app.activeScript.path + "/fonts.tsv");
@@ -153,7 +152,7 @@ iitd.fonts = iitd.fonts.filter(function(e) {
 	}
 	return false;
 });
-alert(iitd.fonts);
+
 for (var i = 0; i < iitd.fonts.length; i++) {
 	var filename = iitd.fonts[i][2];
 	var firstname = iitd.fonts[i][2].split('.')[0];
