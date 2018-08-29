@@ -59,6 +59,7 @@ function reorderChars() {
 	var changeTo = [
 		// indesign find/change text treats ' and ` as equals
 		"्ा" ,   "" ,
+		"्ρा" ,   "ρ" ,
 		"़्ा" ,   "़" ,
 		"़्ो" ,   "़े" ,
 		"्ौ" ,    "़ै" ,

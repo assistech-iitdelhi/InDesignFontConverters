@@ -19,8 +19,10 @@ Kruti Dev 020	Normal	kruti.tsv	Smart Delhi Hindi	Normal	1.0
 Kruti Dev 020	Italic	kruti.tsv	Smart Delhi Hindi	Italic	1.0
 Kruti Dev 020	Bold Italic	kruti.tsv	Smart Delhi Hindi	Bold Italic	1.0
 Kruti Dev 020	Bold	kruti.tsv	Smart Delhi Hindi	Bold	1.0
+ITC Bookman	Light Italic	space.tsv	Smart Delhi Hindi	Italic	1.0
 ITC Bookman	Light	space.tsv	Smart Delhi Hindi	Normal	1.0
-ITC Bookman	Demi	space.tsv	Smart Delhi Hindi	Normal	1.0
+ITC Bookman	Demi Italic	space.tsv	Smart Delhi Hindi	Bold Italic	1.0
+ITC Bookman	Demi	space.tsv	Smart Delhi Hindi	Bold	1.0
 Chanakya	Regular	chanakya.tsv	Smart Delhi Hindi	Normal	1.0
 Chanakya	Italic	chanakya.tsv	Smart Delhi Hindi	Italic	1.0
 Chanakya	Bold Italic	chanakya.tsv	Smart Delhi Hindi	Bold Italic	1.0
