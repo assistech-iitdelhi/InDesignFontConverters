@@ -33,6 +33,7 @@
 \x23	रु
 \x24	+
 \x25	ः	hyphen
+\x2d	.	placed above the & conversion below to prevent	'&' -> '-' -> '.'
 \x26	-
 \x27	श्
 \x28	(
@@ -40,7 +41,6 @@
 \x2a	’
 \x2b	़
 \x2c	ए
-\x2d	.	placed	above	the	&	conversion	below	to	prevent	'&'	->	'-'	->	'.'
 \x2e	ण्
 \x2f	ध
 \x30	0
@@ -85,7 +85,7 @@
 \x57	ॅ
 \x58	ग्
 \x59	ल्
-\x5a	ρ
+\x5a+	ρ
 \x5b	ख्
 \x5c	?
 \x5d	,
@@ -144,7 +144,7 @@
 \xbe	=
 \xbf	{
 \xc0	}
-\xc1	प्र
+\xc1	द्म
 \xc2	न्न
 \xc3	ई
 \xc4	ङ

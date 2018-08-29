@@ -2,8 +2,8 @@
 function main() {
 	for (var i = 0; i < iitd.fonts.length; i++) {
 		convertToUnicode.apply(null, iitd.fonts[i]);
-		reorderChars();
 	}
+	reorderChars();
 }
 
 function setupEssentials() {
@@ -29,17 +29,21 @@ function setupEssentials() {
 function convertToUnicode(srcFont, srcStyle, glyphToCharMap, tgtFont, tgtStyle, scalingFactor) {
 	// TODO: log remaining unconverted text in known fonts
 	function change(ptSize) {
-		app.findGrepPreferences.appliedFont = srcFont;      
-		app.findGrepPreferences.fontStyle = srcStyle;
-		app.findGrepPreferences.findWhat = glyphToCharMap[j][0];
-		//app.findGrepPreferences.pointSize = ptSize;
-		app.changeGrepPreferences.appliedFont = tgtFont;
-		app.changeGrepPreferences.fontStyle = tgtStyle;
-		app.changeGrepPreferences.changeTo = glyphToCharMap[j][1];
-		app.changeGrepPreferences.appliedLanguage = 'Hindi (India)';
-		//app.changeGrepPreferences.pointSize = Math.round(ptSize*scalingFactor);
-		app.changeGrepPreferences.composer = "Adobe World-Ready Paragraph Composer";
-		app.activeDocument.changeGrep();
+		try {
+			app.findGrepPreferences.appliedFont = srcFont;      
+			app.findGrepPreferences.fontStyle = srcStyle;
+			app.findGrepPreferences.findWhat = glyphToCharMap[j][0];
+			//app.findGrepPreferences.pointSize = ptSize;
+			app.changeGrepPreferences.appliedFont = tgtFont;
+			app.changeGrepPreferences.fontStyle = tgtStyle;
+			app.changeGrepPreferences.changeTo = glyphToCharMap[j][1];
+			app.changeGrepPreferences.appliedLanguage = 'Hindi (India)';
+			//app.changeGrepPreferences.pointSize = Math.round(ptSize*scalingFactor);
+			app.changeGrepPreferences.composer = "Adobe World-Ready Paragraph Composer";
+			app.activeDocument.changeGrep();
+		} catch(e) {
+			alert(srcFont + ", " + tgtFont + j + ": " + e.message);
+		}
 	};
 	app.findChangeGrepOptions.includeMasterPages = true;
 	app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
