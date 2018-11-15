@@ -1,461 +1,181 @@
-﻿(function() {
-  var stories = app.activeDocument.stories.everyItem().getElements();
-  //Load mappings from file--------------------------------------------------------------------------
-  var targetFont = "Kokila";
-  var targetFontScalingFactor = 1.07;
-  try {
-    var fileName = File(app.activeScript.fullName).parent.fsName + "\\mappings.csv";
-    var file = new File(fileName)
-    file.open("r");
-    while(!file.eof){
-        row=file.readln();
-        cols = row.split(",");
-        if (matches(cols[0])) {
-           targetFont = cols[1];
-           targetFontScalingFactor = cols[2];
-           break;
-        }
-    }
-    file.close();
-  } catch (err) {
-    alert(err);
-  }
-  //Mappings loaded----------------------------------------------------------------------------------
-  // Progress bar -----------------------------------------------------------------------------------
-  var myProgressWin = new Window ( "window", "Unicode Script "+app.activeDocument.name );
-  var myProgressBar = myProgressWin.add ("progressbar", [12, 12, 350, 24], 0, stories.length);
-  var myProgressTxt = myProgressWin.add("statictext", undefined, "Starting Conversion");
-  myProgressTxt.bounds = [0, 0, 340, 200];
-  myProgressTxt.alignment = "left";
-  myProgressWin.show();
-  // Progress bar -----------------------------------------------------------------------------------
-  if (textSelected()) {
-    convert(app.selection[0], targetFont, targetFontScalingFactor);
-  } else {
-    for (var i = 0; i < stories.length; i++) {
-      var textStyleRanges = stories[i].textStyleRanges.everyItem().getElements();
-      for (var j = textStyleRanges.length-1; j >= 0; j--) {
-        var myText = textStyleRanges[j];
-        
-        if (matches(myText.appliedFont.fontFamily)) {
-          convert(myText, targetFont, targetFontScalingFactor);          
-          //if (myText.appliedParagraphStyle.name == "[No Paragraph Style]") {
-            convertStyle(myText, targetFont, targetFontScalingFactor);
-          //}
-        } else {
-          write_to_file("Skipping textStyleRange of " + myText.appliedFont.fontFamily + ", " + myText.fontStyle + "\n");
-        }
-        // Progress bar -----------------------------------------------------------------------------------
-        myProgressBar.value = i;
-        myProgressTxt.text = String("Converted story " + (myProgressBar.value+1) + " of " + stories.length + "(" + textStyleRanges.length + " textStyleRanges): " + myText.contents);
-        // Progress bar -----------------------------------------------------------------------------------
-      }         
-    }
-    convertParagraphStyles(targetFont, targetFontScalingFactor);
-    convertFont(targetFont);
-    // Progress bar -----------------------------------------------------------------------------------
-    myProgressWin.close();
-    // Progress bar -----------------------------------------------------------------------------------  
-  }  
-})();
-function convertFont(targetFont) {
-  for (var i = 0; i < app.activeDocument.fonts.length; i++) {
-    var fontFamily = app.activeDocument.fonts[i].fontFamily;
-    if (matches(fontFamily))     {
-      app.findTextPreferences = NothingEnum.nothing;
-      app.changeTextPreferences = NothingEnum.nothing;
-      app.findTextPreferences.appliedFont = fontFamily;
-      app.changeTextPreferences.appliedFont = targetFont;
-      app.activeDocument.changeText();
-    }
-  }
-}
-function convertParagraphStyles(targetFont, targetFontScalingFactor) {
-	var paraStyles = app.activeDocument.paragraphStyles.everyItem().getElements();
-  // go upto 1 as 0 is the root style and has no properties
-  for (var i = paraStyles.length-1; i > 0; i--) {
-    convertStyle(paraStyles[i], targetFont, targetFontScalingFactor);
-  }
-}
-function convert(txt, font, scalingFactor) {
-  var converted = convert_to_unicode(txt.contents);
-  if (converted != undefined) {
-    //txt.pointSize = Math.round(txt.pointSize*scalingFactor);
-    txt.contents = converted;
-  }
-  return converted;
-}
-function convertStyle(style, targetFont, scalingFactor) {
-  if (!matches(style.appliedFont.fontFamily))
-    return;
-  
-  // change font AFTER checking style name. Otherwise style name will change too soon
-  if (style.fontStyle.indexOf("Bold") >= 0 && style.fontStyle.indexOf("Italic") >= 0) {
-      style.appliedFont = app.fonts.item(targetFont);
-      style.fontStyle = "Bold Italic";
-  } else if (style.fontStyle.indexOf("Bold") >= 0) {
-      style.appliedFont = app.fonts.item(targetFont);
-      style.fontStyle = "Bold";
-  } else if (style.fontStyle.indexOf("Italic") >= 0) {
-      style.appliedFont = app.fonts.item(targetFont);
-      style.fontStyle = "Italic";
-  } else if (style.fontStyle.indexOf("Normal") >= 0) {
-      style.appliedFont = app.fonts.item(targetFont);
-      style.fontStyle = "Regular";
-  } else {
-    style.appliedFont = app.fonts.item(targetFont);
-  }
-  if (!isNaN(style.pointSize)) {
-    style.pointSize = Math.round(style.pointSize*scalingFactor);
-  }
-  style.composer  = "Adobe World-Ready Paragraph Composer";
-}
-function textSelected() {
-  if (app.selection.length == 1) {
-    switch (app.selection[0].constructor.name) {
-      case "InsertionPoint":
-      case "Character":
-      case "Word":
-      case "TextStyleRange":
-      case "Line":
-      case "Paragraph":
-      case "TextColumn":
-      case "Text":
-      case "Story":
-        if (app.selection[0].contents.length > 0)
-          return true;
-        else
-          return false;
-        break;
-      default:
-        return false;
-    }
-  } else {
-      return false;
-  }
-}
-function matches(fontName) {
-  return fontName.indexOf("Walkman-Chanakya-") == 0;
-}                          
-function write_to_file(text) {
-  var file = new File("~/Desktop/ID-converters.log");
-  file.encoding = "UTF-8";
-  if (file.exists) {
-    file.open("e");
-    file.seek(0, 2);
-  }
-  else {
-    file.open("w");
-  }
-  var d = new Date();  
-  file.write(d.toString() + ": " + File($.fileName).name + ": " + text + "\n");
-  file.close();
+﻿/******************************************************************************
+	Copyright 2018, AssisTech, Indian Institute of Technology, Delhi 
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <https://www.gnu.org/licenses/>. 
+*******************************************************************************/
+setupEssentials(); 
+function main() {
+	for (var i = 0; i < iitd.fonts.length; i++) {
+		convertToUnicode.apply(null, iitd.fonts[i]);
+	}
+	reorderChars();
 }
 
-function convert_to_unicode(legacy_txt) {
-  var array_one = new Array(
-    "I+kQ", "फ़" ,
-    "OkQa", "क़",
-    "jQ", "रु",
-    "ñ" , "॰" ,
-    "Q\+Z" , "QZ\+" ,
-    "sas" , "sa" ,
-    "aa" , "a" ,
-    "¼Z" , "र्द्ध" ,
-    "ZZ" , "Z" ,
-    "å" , "०" ,
-    "ƒ" , "१" ,
-    "\„" , "२" ,
-    "…" , "३" ,
-    "†" , "४" ,
-    "‡" , "५" ,
-    "\ˆ" , "६" ,
-    "‰" , "७" ,
-    "Š" , "८" ,
-    "\‹" , "९" ,
-    "¶+" , "फ़्" ,
-    "d+" , "क़" ,
-    "[+k" , "ख़" ,
-    "[+" , "ख़्" ,
-    "x+" , "ग़" ,
-    "T+" , "ज़्" ,
-    "t+" , "ज़" ,
-    "M+" , "ड़" ,
-    "\<+" , "ढ़" ,    
-    "\;+" , "य़" ,
-    "j+" , "ऱ" ,
-    "u+" , "ऩ" ,
-    "Ùk" , "त्त" ,
-    "Ù" , "त्त्" ,
-    "ä" , "क्त" ,
-    "–" , "दृ" ,
-    "—" , "कृ" ,
-    "é" , "न्न" ,
-    "™" , "न्न्" ,
-    "f\=k" , "f\=" ,
-    "à" , "ह्न" ,
-    "á" , "ह्य" ,
-    "â" , "हृ" ,
-    "ã" , "ह्म" ,
-    "ºz" , "ह्र" ,
-    "º" , "ह्" ,
-    "í" , "द्द" ,
-    "\{k" , "क्ष" ,
-    "\{" , "क्ष्" ,
-    "f\=" , "त्रि" ,
-    "\=k" , "त्र" ,
-    "\«" , "त्र्" ,
-    "Nî" , "छ्य" ,
-    "Vî" , "ट्य" ,
-    "Bî" , "ठ्य" ,
-    "Mî" , "ड्य" ,
-    "\<î" , "ढ्य" ,
-    "|" , "द्य" ,
-    "K" , "ज्ञ" ,
-    "}" , "द्व" ,
-    "J" , "श्र" ,
-    "Vª" , "ट्र" ,
-    "Mª" , "ड्र" ,
-    "\>ª" , "ढ्र" ,
-    "Nª" , "छ्र" ,
-    "Ø" , "क्र" ,
-    "Ý" , "फ्र" ,
-    "nzZ" , "र्द्र" ,
-    "æ" , "द्र" ,
-    "ç" , "प्र" ,
-    "Á" , "प्र" ,
-    "xz" , "ग्र" ,
-      "#" , "रु" ,
-      ":" , "रू" ,
-    "v‚" , "ऑ" ,
-    "vks" , "ओ" ,
-    "vkS" , "औ" ,
-    "vk" , "आ" ,
-    "v" , "अ" ,
-    "b±" , "ईं" ,
-    "Ã" , "ई" ,
-    "bZ" , "ई" ,
-    "b" , "इ" ,
-    "mQ" , "ऊ" ,
-    "m" , "उ" ,
-    "Å" , "ऊ" ,
-    "\,s" , "ऐ" ,
-    "\," , "ए" ,
-    "½" , "ऋ" ,
-    "ô" , "क्क" ,
-    "d" , "क" ,
-    "Dk" , "क" ,
-    "D" , "क्" ,
-    "£" , "र्f" ,
-    "[k" , "ख" ,
-    "[" , "ख्" ,
-    "x" , "ग" ,
-    "Xk" , "ग" ,
-    "X" , "ग्" ,
-    "Ä" , "घ" ,
-    "?k" , "घ" ,
-    "?" , "घ्" ,
-    "³" , "ङ" ,
-    "p" , "च" ,
-    "Pk" , "च" ,
-    "P" , "च्" ,
-    "N" , "छ" ,
-    "\”k" , "ज़" ,
-    "\”" , "ज़्" ,
-    "t" , "ज" ,
-    "Tk" , "ज" ,
-    "T" , "ज्" ,
-    "\>" , "झ" ,
-    "÷" , "झ्" ,
-    "¥" , "ञ" ,
-    "ê" , "ट्ट" ,
-    "ë" , "ट्ठ" ,
-    "V" , "ट" ,
-    "B" , "ठ" ,
-    "ì" , "ड्ड" ,
-    "ï" , "ड्ढ" ,
-    "M+" , "ड़" ,
-    "\<+" , "ढ़" ,
-    "M" , "ड" ,
-    "\<" , "ढ" ,
-    "\.k" , "ण" ,
-    "\." , "ण्" ,
-    "r" , "त" ,
-    "Rk" , "त" ,
-    "R" , "त्" ,
-    "Fk" , "थ" ,
-    "F" , "थ्" ,
-    "n" , "द" ,
-    "\/" , "ध" ,
-    "èk" , "ध" ,
-    "è" , "ध्" ,
-    "Ë  " , "ध्" ,
-    "u" , "न" ,
-    "Uk" , "न" ,
-    "U" , "न्" ,
-    "iQ" , "फ" ,
-    "i" , "प" ,
-    "Ik" , "प" ,
-    "I" , "प्" ,
-    "c" , "ब" ,
-    "Ck" , "ब" ,
-    "C" , "ब्" ,
-    "Hk" , "भ" ,
-    "H" , "भ्" ,
-    "e" , "म" ,
-    "Ek" , "म" ,
-    "E" , "म्" ,
-    "\;" , "य" ,
-    "j" , "र" ,
-    "y" , "ल" ,
-    "Yk" , "ल" ,
-    "Y" , "ल्" ,
-    "G" , "ळ" ,
-    "oQ" , "क" ,
-    "o" , "व" ,
-    "Ok" , "व" ,
-    "O" , "व्" ,
-    "\'k" , "श" ,
-    "\'" , "श्" ,
-    "Ük" , "श" ,
-    "Ü" , "श्" ,
-    "\"k" , "ष" ,
-    "\"" , "ष्" ,
-    "\xb6", '"',
-    "\xb8", '"',
-    "l" , "स" ,
-    "Lk" , "स" ,
-    "L" , "स्" ,
-    "g" , "ह" ,
-    "È" , "ीं" ,
-    "z" , "्र" ,
-    "Ì" , "द्द" ,
-    "Í" , "ऋ" ,
-    "Î" , "ट्ठ" ,
-    "Ï" , "ड्ड" ,
-    "Ñ" , "कृ" ,
-    "Ò" , "भ" ,
-    "Ó" , "्य" ,
-    "Ô" , "ड्ढ" ,
-    "Ö" , "झ्" ,
-    "Ø" , "क्र" ,
-    "Ù" , "त्त्" ,
-    "¼" , "द्ध" ,
-    "Ú" , "फ्र" ,
-    "É" , "ह्न" ,
-    // following block added on 19-3-2011
-    "Ů" , "त्त्" ,
-    "Ľ" , "द्ध" ,
-    "˝" , "ऋ" ,
-    "Ř" , "क्र" ,
-    "Ń" , "कृ" ,    
-    "č" , "ध्" ,
-    "Ş" , "्र" ,
-    "I+k", "",
-    "\‚" , "ॉ" ,
-    "¨" , "ो" ,
-    "ks" , "ो" ,
-    "©" , "ौ" ,
-    "kS" , "ौ" ,
-    "k" , "ा" ,
-    "h" , "ी" ,
-    "q" , "ु" ,
-    "w" , "ू" ,
-    "\`" , "ृ" ,
-    "s" , "े" ,
-    "¢" , "े" ,
-    "S" , "ै" ,
-    "a" , "ं" ,
-    "¡" , "ँ" ,
-    "ˇ" , "ँ" ,
-    "%" , "ः" ,
-    "W" , "ॅ" ,
-    "•" , "ऽ" ,
-    "·" , "ऽ" ,
-    "∙" , "ऽ" ,
-    "·" , "ऽ" ,
-    "+" , "़" ,
-    "\\" , "?" ,
-    "\‘" , "\"" ,
-    "\’" , "\"" ,
-    "\“" , "\'" ,
-    // "\”" , "\'" ,
-    "^" , "\‘" ,
-    "*" , "\’" ,
-    "Þ" , "\“" ,
-    "ß" , "\”" ,
-    "¾" , "=" ,
-    "-" , "." , // placed above the & conversion below to prevent '&' -> '-' -> '.'
-    "&" , "-" ,
-    "µ" , "-" ,
-    "¿" , "{" ,
-    "À" , "}" ,
-    "A" , "।" ,
+function setupEssentials() {
+	if (typeof Array.prototype.indexOf != "function") {
+		Array.prototype.indexOf = function (el) {
+			for(var i = 0; i < this.length; i++) if(el === this[i]) return i;
+			return -1;
+		}
+	}
+	if (typeof Array.prototype.filter != "function") {
+		Array.prototype.filter = function (func) {
+			var a = [];
+			for(var i = 0; i < this.length; i++) {
+				if (func(this[i])) {
+					a.push(this[i]);
+				}
+			}		
+			return a;
+		}
+	}
+}
+
+function convertToUnicode(srcFont, srcStyle, glyphToCharMap, tgtFont, tgtStyle, scalingFactor) {
+	// TODO: log remaining unconverted text in known fonts
+	function change(ptSize) {
+		try {
+			app.findGrepPreferences.appliedFont = srcFont;      
+			app.findGrepPreferences.fontStyle = srcStyle;
+			app.findGrepPreferences.findWhat = glyphToCharMap[j][0];
+			//app.findGrepPreferences.pointSize = ptSize;
+			app.changeGrepPreferences.appliedFont = tgtFont;
+			app.changeGrepPreferences.fontStyle = tgtStyle;
+			app.changeGrepPreferences.changeTo = glyphToCharMap[j][1];
+			app.changeGrepPreferences.appliedLanguage = 'Hindi (India)';
+			//app.changeGrepPreferences.pointSize = Math.round(ptSize*scalingFactor);
+			app.changeGrepPreferences.composer = "Adobe World-Ready Paragraph Composer";
+			app.activeDocument.changeGrep();
+		} catch(e) {
+			alert(srcFont + ", " + tgtFont + j + ": " + e.message);
+		}
+	};
+	app.findChangeGrepOptions.includeMasterPages = true;
+	app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
+	for (var j = 0; j < glyphToCharMap.length; j++) {
+		change(0);
+	}
+	// clear settings so the last lookup doesn't interfere with fut'ure searches
+	app.findTextPreferences = NothingEnum.NOTHING;
+	app.changeTextPreferences = NothingEnum.NOTHING;  
+} // end of convertToUnicode function
+
+function reorderChars() {
+	var changeTo = [
+		// indesign find/change text treats ' and ` as equals
+		"्ा" ,   "" ,
+		"्ρा" ,   "ρ" ,
+		"़्ा" ,   "़" ,
+		"़्ो" ,   "़े" ,
+		"्ौ" ,    "़ै" ,
+		"ाै" , "ौ" ,
+		"ाे" , "ो" ,
+		"ाॆ", "ॆ",
+		"ाॅ" , "ॉ" ,
+		"अा", "आ",
+		"अौ" , "औ" ,
+		"अो" , "ओ" ,
+		"आॅ" , "ऑ",
+		"आॆ", "ऒ",
+		
+		// nothing irrelevant separates parts of क, फ
+		'व([Ρρ़्ाुूेैोौॊॉीृंँ]*)η', 'क$1',
+		'व़([Ρρ्ाुूेैोौॊॉीृंँ]*)η', 'क़$1',
+		'प([Ρρ्ाुूेैोौॊॉींँ]*)η', 'फ$1',
+		'प़([Ρρ्ाुूेैोौॊॉींँ]*)η', 'फ़$1',
+		'उ([Ρρ़ाुूेैोौॊॉींँ]*)η', 'ऊ$1',
+		'र([़ंँ]*)η', 'रु$1',
     
-    "Œ" , "॰" ,
-    "]" , "\," ,
-    "@" , "\/" ,
-    " ः" , ":" ,
-    "~" , "्" ,
-    "्ा" ,    "" ,
-    "ाे" , "ो" ,
-    "ाॅ" , "ॉ" ,
-    "अौ" , "औ" ,
-    "अो" , "ओ" ,
-    "आॅ" , "ऑ");
-  var array_one_length = array_one.length ;
-  //  Break the long text into small bunches of chunk_size  characters each.
-  var text_size = legacy_txt.length ;
-  var processed_text = '' ;  //blank
-  var sthiti1 = 0 ;  var sthiti2 = 0 ;  var chale_chalo = 1 ;
-  var chunk_size = 6000; // this charecter long text will be processed in one go.
-  while ( chale_chalo == 1 )
-  {
-    sthiti1 = sthiti2 ;
-    if ( sthiti2 < ( text_size - chunk_size ) )
-    {
-      sthiti2 +=  chunk_size ;
-    }
-    else  { sthiti2 = text_size  ;  chale_chalo = 0 }
-    //alert(legacy_txt);
-    processed_text = processed_text + Replace_Symbols(legacy_txt);
-    write_to_file("convert_to_unicode(" + legacy_txt + ") = " + processed_text);
-  }
-  
-  return processed_text;
-  function Replace_Symbols(modified_substring)
-  {
-    var input = modified_substring;
+		// vowel signs and vowel modifiers go to end
+		'([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)([ाुूेैोौॊॉीृंँ]*)Ρ' , '$1्र$2' ,
+
+		// vowel modifiers after vowel signs
+		'([ंँ])([्ाुूेैोौॊॉीृ]+)' , '$2$1' ,
+
+		// nukta before vowel signs
+		'([्ाुूेैोौॊॉीृ]+)़' , '़$1' ,
+		
+		// remove duplicate vowel modifiers
+		'ंं*' , 'ं' ,
     
-    //substitute array_two elements in place of corresponding array_one elements
-    if ( modified_substring == "" )  // if stringto be converted is non-blank then no need of any processing.
-      return;
-    modified_substring = modified_substring.replace( /([ZzsSqwa¡`]+)Q/g , "Q$1" )
-    for ( input_symbol_idx = 0;   input_symbol_idx < array_one_length-1;    input_symbol_idx = input_symbol_idx + 2 )
-    {
-      var idx = modified_substring.indexOf( array_one[input_symbol_idx] )  ;  // index of the symbol being searched for replacement
-      while (idx != -1 ) { // while-00                
-        modified_substring = modified_substring.replace( array_one[ input_symbol_idx ] , array_one[input_symbol_idx+1] )
-        idx = modified_substring.indexOf( array_one[input_symbol_idx] )  ;  // index of the symbol being searched for replacement
-      } // end of while-00 loop
-    } // end of for loop
-    modified_substring = modified_substring.replace( /([ेैुूं]+)्र/g , "्र$1" ) ;
-    modified_substring = modified_substring.replace( /ं([ाेैुू]+)/g , "$1ं" ) ;
-    modified_substring = modified_substring.replace( /([ाेैुू]+)़/g , "़$1" ) ;
-    modified_substring = modified_substring.replace( /([ \n])ा/g , "$1श" ) ;
-    modified_substring = modified_substring.replace( /¯/g , "f") ;
-    modified_substring = modified_substring.replace( /Ł/g , "र्f") ;
-    modified_substring = modified_substring.replace( /([fŻ])([कखगघङचछजझञटठडड़ढढ़णतथदधनपफबभमयरलवशषसहक्ष])/g , "$2$1" ) ;
-    modified_substring = modified_substring.replace( /([fŻ])(्)([कखगघङचछजझञटठडड़ढढ़णतथदधनपफबभमयरलवशषसहक्ष])/g , "$2$3$1" ) ;
-    modified_substring = modified_substring.replace( /([fŻ])(्)([कखगघङचछजझञटठडड़ढढ़णतथदधनपफबभमयरलवशषसहक्ष])/g , "$2$3$1" ) ;
-    modified_substring = modified_substring.replace( /f/g , "ि") ;
-    modified_substring = modified_substring.replace( /Ż/g , "िं") ;
-    //following three statement for adjusting position of reph ie, half r .
-    modified_substring = modified_substring.replace( /±/g , "Zं" ) ;
-    modified_substring = modified_substring.replace( /([कखगघचछजझटठडड़ढढ़णतथदधनपफबभमयरलळवशषसहक्षज्ञ])([ािीुूृेैोौंँ]*)([Z])/g , "$3$1$2" ) ;
-    modified_substring = modified_substring.replace( /([कखगघचछजझटठडड़ढढ़णतथदधनपफबभमयरलळवशषसहक्षज्ञ])([्])([Z])/g , "$3$1$2" ) ;
-    modified_substring = modified_substring.replace( /Z/g , "र्" ) ;
-    write_to_file("Replace_Symbols(" + modified_substring + ") = " + modified_substring);
-    return modified_substring;
-  } // end of the function  Replace_Symbols
-} // end of convert_to_unicode function
+		'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)ρμ' , 'र्$1िं',
+		'ερμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , 'र्$1िं',
+		'ερ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , 'र्$1ि',
+		'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)ρ' , 'र्$1ि',
+		'εμ(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , '$1िं',
+		'ε(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?)' , '$1ि',
+		'(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉीृ]?)ρ[μं]' , 'र्$1ं',
+		'(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉीृ]?)[μं]ρ' , 'र्$1ं',
+		'(([कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?्)*[कखगघङचछजझञटठडढणतथदधनपफबभमयरलवशषसह]़?[ाुूेैोौॊॉीृ]?)ρ' , 'र्$1' ,
+		'इρ[μं]' , 'ईं',
+		'इρ', 'ई',
+		
+		// replace by nukta containing counterparts as the font handles them better
+		'ऩ',	'\\x{0929}',
+		'ऱ',	'\\x{0931}',
+		'ऴ',	'\\x{0934}',
+		'क़',	'\\x{0958}',
+		'ख़',	'\\x{0959}',
+		'ग़',	'\\x{095A}',
+		'ज़',	'\\x{095B}',
+		'ड़',	'\\x{095C}',
+		'ढ़',	'\\x{095D}',
+		'फ़',	'\\x{095E}',
+		'य़',	'\\x{095F}',
+	];
+	app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
+	app.findChangeGrepOptions.includeMasterPages = true;
+	for (var i = 0; i < changeTo.length; i += 2) {    
+		app.findGrepPreferences.findWhat = changeTo[i];
+		app.changeGrepPreferences.changeTo = changeTo[i+1];
+		app.activeDocument.changeGrep();
+	}
+}
+
+function read_tsv(filepath) {
+	var ifile = new File(filepath);    
+	ifile.encoding = 'UTF-8';
+	var a = [];
+	if(!ifile.exists) {
+		alert("Could not open " + filepath + " for reading");
+	}
+	ifile.open("r");
+	while (!ifile.eof) {
+		var words = ifile.readln().split("\t");
+		a.push(words);
+	}
+	ifile.close();
+	return a;
+}
+// TODO: convert each word to greek letter and back to remove tracked chars	
+// TODO: use google spreadsheet to ensure all covered, log remaining intermediate chars
+// TODO: find Nukta char words and replace by themselves using intermediate chars
+var iitd = {};
+iitd.fonts = read_tsv(app.activeScript.path + "/fonts.tsv");
+iitd.fonts = iitd.fonts.filter(function(e) {
+	var docFonts = app.activeDocument.fonts;
+	for (var i = 0; i < docFonts.count(); i++) {
+		if (docFonts[i].fontFamily == e[0]) {
+			return true;
+		}
+	}
+	return false;
+});
+
+for (var i = 0; i < iitd.fonts.length; i++) {
+	var filename = iitd.fonts[i][2];
+	var firstname = iitd.fonts[i][2].split('.')[0];
+	iitd[firstname] = read_tsv(app.activeScript.path + "/" + filename);
+	iitd.fonts[i][2] = iitd[firstname];
+}
+main();

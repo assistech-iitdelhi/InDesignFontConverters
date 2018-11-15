@@ -179,7 +179,7 @@ gKasBatchPprocessScripts.GetAllInddFiles = function(folder) {
 		if (file instanceof Folder && gKasBatchPprocessScripts.set.rbScope == 4) {
 			files = files.concat(gKasBatchPprocessScripts.GetAllInddFiles(file));
 		}
-		else if (file instanceof File && file.name.match(/\.indd$/i) && file.name.match(/^Backup/) == null) {
+		else if (file instanceof File && file.name.match(/\.indd$/i) && file.name.match(/^(Backup|Report)/) == null) {
 			files.push(file);
 		}
 	}
