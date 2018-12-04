@@ -15,12 +15,16 @@
 *******************************************************************************/
 setupEssentials(); 
 function main() {
+	// for each applicable source font name/style to target name/style mapping
 	for (var i = 0; i < iitd.fonts.length; i++) {
+		// convert the byte sequence to unicode sequence
 		convertToUnicode.apply(null, iitd.fonts[i]);
 	}
+	// reorder the characters to their logically correct positions
 	reorderChars();
 }
 
+// utility functions for lookup and filtering not available in ID javascript
 function setupEssentials() {
 	if (typeof Array.prototype.indexOf != "function") {
 		Array.prototype.indexOf = function (el) {
@@ -41,6 +45,7 @@ function setupEssentials() {
 	}
 }
 
+// convert from a source font name/style to target font name/style using the glyphToCharMap which is a 2-D array
 function convertToUnicode(srcFont, srcStyle, glyphToCharMap, tgtFont, tgtStyle, scalingFactor) {
 	// TODO: log remaining unconverted text in known fonts
 	function change(ptSize) {
@@ -142,6 +147,7 @@ function reorderChars() {
 	}
 }
 
+// read a file containing tab separated values and return it as a 2-d array
 function read_tsv(filepath) {
 	var ifile = new File(filepath);    
 	ifile.encoding = 'UTF-8';
@@ -160,8 +166,12 @@ function read_tsv(filepath) {
 // TODO: convert each word to greek letter and back to remove tracked chars	
 // TODO: use google spreadsheet to ensure all covered, log remaining intermediate chars
 // TODO: find Nukta char words and replace by themselves using intermediate chars
+
 var iitd = {};
+// read all the font mappings
 iitd.fonts = read_tsv(app.activeScript.path + "/fonts.tsv");
+
+// but skip those that are not present in the document
 iitd.fonts = iitd.fonts.filter(function(e) {
 	var docFonts = app.activeDocument.fonts;
 	for (var i = 0; i < docFonts.count(); i++) {
@@ -172,6 +182,7 @@ iitd.fonts = iitd.fonts.filter(function(e) {
 	return false;
 });
 
+// the above loop just read the name of the file containing byte to unicode mappings. actually load the file here.
 for (var i = 0; i < iitd.fonts.length; i++) {
 	var filename = iitd.fonts[i][2];
 	var firstname = iitd.fonts[i][2].split('.')[0];
