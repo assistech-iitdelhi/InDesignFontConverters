@@ -1,5 +1,5 @@
 ﻿/******************************************************************************
-	Copyright 2018, AssisTech, Indian Institute of Technology, Delhi 
+	Copyright 2019, AssisTech, Indian Institute of Technology, Delhi 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation, either version 3 of the License, or
@@ -57,7 +57,7 @@ function convertToUnicode(srcFont, srcStyle, glyphToCharMap, tgtFont, tgtStyle, 
 			app.changeGrepPreferences.appliedFont = tgtFont;
 			app.changeGrepPreferences.fontStyle = tgtStyle;
 			app.changeGrepPreferences.changeTo = glyphToCharMap[j][1];
-			app.changeGrepPreferences.appliedLanguage = 'Hindi (India)';
+			app.changeGrepPreferences.appliedLanguage = 'Hindi (India)'; // TODO externalize this
 			//app.changeGrepPreferences.pointSize = Math.round(ptSize*scalingFactor);
 			app.changeGrepPreferences.composer = "Adobe World-Ready Paragraph Composer";
 			app.activeDocument.changeGrep();
@@ -65,6 +65,10 @@ function convertToUnicode(srcFont, srcStyle, glyphToCharMap, tgtFont, tgtStyle, 
 			alert(srcFont + ", " + tgtFont + j + ": " + e.message);
 		}
 	};
+	app.findChangeGrepOptions.includeFootnotes = true;    
+	app.findChangeGrepOptions.includeHiddenLayers = true;    
+	app.findChangeGrepOptions.includeLockedLayersForFind = true;    
+	app.findChangeGrepOptions.includeLockedStoriesForFind = true;    
 	app.findChangeGrepOptions.includeMasterPages = true;
 	app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
 	for (var j = 0; j < glyphToCharMap.length; j++) {
@@ -77,7 +81,8 @@ function convertToUnicode(srcFont, srcStyle, glyphToCharMap, tgtFont, tgtStyle, 
 
 function reorderChars() {
 	var changeTo = [
-		// indesign find/change text treats ' and ` as equals
+		// indesign find/change text treats ' and ` as 
+		// TODO - externalize these
 		"्ा" ,   "" ,
 		"्ρा" ,   "ρ" ,
 		"़्ा" ,   "़" ,
@@ -140,6 +145,11 @@ function reorderChars() {
 	];
 	app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
 	app.findChangeGrepOptions.includeMasterPages = true;
+	app.findChangeGrepOptions.includeFootnotes = true;    
+	app.findChangeGrepOptions.includeHiddenLayers = true;    
+	app.findChangeGrepOptions.includeLockedLayersForFind = true;    
+	app.findChangeGrepOptions.includeLockedStoriesForFind = true;    
+
 	for (var i = 0; i < changeTo.length; i += 2) {    
 		app.findGrepPreferences.findWhat = changeTo[i];
 		app.changeGrepPreferences.changeTo = changeTo[i+1];
@@ -158,13 +168,12 @@ function read_tsv(filepath) {
 	ifile.open("r");
 	while (!ifile.eof) {
 		var words = ifile.readln().split("\t");
-		a.push(words);
+		a.push(words.filter(function(e) {return e != ''})); 
 	}
 	ifile.close();
 	return a;
 }
 // TODO: convert each word to greek letter and back to remove tracked chars	
-// TODO: use google spreadsheet to ensure all covered, log remaining intermediate chars
 // TODO: find Nukta char words and replace by themselves using intermediate chars
 
 var iitd = {};
