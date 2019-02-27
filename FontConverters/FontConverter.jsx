@@ -56,13 +56,13 @@ function convertToUnicode(srcFont, srcStyle, glyphToCharMap, tgtFont, tgtStyle, 
 			//app.findGrepPreferences.pointSize = ptSize;
 			app.changeGrepPreferences.appliedFont = tgtFont;
 			app.changeGrepPreferences.fontStyle = tgtStyle;
-			app.changeGrepPreferences.changeTo = glyphToCharMap[j][1];
+			app.changeGrepPreferences.changeTo = glyphToCharMap[j][1] ? glyphToCharMap[j][1] : "";
 			app.changeGrepPreferences.appliedLanguage = 'Hindi (India)'; // TODO externalize this
 			//app.changeGrepPreferences.pointSize = Math.round(ptSize*scalingFactor);
 			app.changeGrepPreferences.composer = "Adobe World-Ready Paragraph Composer";
 			app.activeDocument.changeGrep();
 		} catch(e) {
-			alert(srcFont + ", " + tgtFont + j + ": " + e.message);
+			alert(srcFont + ", " + tgtFont + ", "  + glyphToCharMap[j][0] + ", " + glyphToCharMap[j][1] + ": " + e.message);
 		}
 	};
 	app.findChangeGrepOptions.includeFootnotes = true;    

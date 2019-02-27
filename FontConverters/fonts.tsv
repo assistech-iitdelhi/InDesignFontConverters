@@ -21,6 +21,7 @@ Walkman-Chanakya-905		Bold Italic			walkman.tsv	Smart Delhi Hindi	Bold Italic	1.
 Walkman-Chanakya-901		Bold Italic			walkman.tsv	Smart Delhi Hindi	Bold Italic	1.0
 Walkman-Chanakya-905		Bold				walkman.tsv	Smart Delhi Hindi	Bold		1.0
 Walkman-Chanakya-901		Bold				walkman.tsv	Smart Delhi Hindi	Bold		1.0
+Ajay Normal			Regular				walkman.tsv	Smart Delhi Hindi	Normal		1.0
 Rupee				Regular				rupee.tsv	Smart Delhi Hindi	Bold		1.0
 Rupee				Italic				rupee.tsv	Smart Delhi Hindi	Bold		1.0
 Rupee				Bold Italic			rupee.tsv	Smart Delhi Hindi	Bold		1.0
@@ -38,6 +39,7 @@ Kruti Dev 011			Regular				kruti.tsv	Smart Delhi Hindi	Bold Italic	1.0
 Kruti Dev 020			Bold				kruti.tsv	Smart Delhi Hindi	Bold		1.0
 Kruti Dev 090			Regular				kruti.tsv	Smart Delhi Hindi	Normal		1.0
 Kruti Dev 501			Regular				kruti.tsv	Smart Delhi Hindi	Normal		1.0
+Kruti Dev 501			Bold				kruti.tsv	Smart Delhi Hindi	Bold		1.0
 Kruti Dev 500			Regular				kruti.tsv	Smart Delhi Hindi	Normal		1.0
 Kruti Dev 500			Bold				kruti.tsv	Smart Delhi Hindi	Bold		1.0
 Kruti Dev 500			Italic				kruti.tsv	Smart Delhi Hindi	Italic		1.0
@@ -61,6 +63,7 @@ Rekha				Bold Italic			rekha.tsv	Smart Delhi Hindi	Bold Italic	1.0
 Rekha				Bold				rekha.tsv	Smart Delhi Hindi	Bold		1.0
 Rekha				Italic				rekha.tsv	Smart Delhi Hindi	Italic		1.0
 Rekha				Normal				rekha.tsv	Smart Delhi Hindi	Normal		1.0
+Rekha				Chanakya905Bold			rekha.tsv	Smart Delhi Hindi	Bold		1.0
 DevLys 140			Regular				kruti.tsv	Smart Delhi Hindi	Bold		1.0
 DevLys 140			Bold				kruti.tsv	Smart Delhi Hindi	Bold		1.0
 DevLys 100			Bold				kruti.tsv	Smart Delhi Hindi	Bold		1.0
