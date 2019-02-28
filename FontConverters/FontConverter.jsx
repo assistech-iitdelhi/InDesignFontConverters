@@ -17,8 +17,8 @@ setupEssentials();
 var mappings = readMappings();
 main(mappings);
 function main(mappings) {
-	//for (var i = 0; i < mappings.length; i++) 		
-	//	convert.apply(null, mappings[i]);
+	for (var i = 0; i < mappings.length; i++) 		
+		convert.apply(null, mappings[i]);
 	convert(read_tsv(app.activeScript.path + "/reorder.tsv"));
 }
 
@@ -55,18 +55,23 @@ function setupEssentials() {
 
 // convert from a source font name/style to target font name/style using the map which is a 2-D array
 function convert(map, srcFont, srcStyle, tgtFont, tgtStyle, scalingFactor, language) {
-  alert(map);
+  
 	function change() {
 		try {
-			//if (srcFont) app.findGrepPreferences.appliedFont = srcFont;      
-			//if (srcStyle) app.findGrepPreferences.fontStyle = srcStyle;
+			
+			app.findGrepPreferences = NothingEnum.NOTHING;
+			app.changeGrepPreferences = NothingEnum.NOTHING;
+			if (srcFont) app.findGrepPreferences.appliedFont = srcFont;      
+			if (srcStyle) app.findGrepPreferences.fontStyle = srcStyle;
 			app.findGrepPreferences.findWhat = map[j][0];
 			
-      //if (tgtFont) app.changeGrepPreferences.appliedFont = tgtFont;
-			//if (tgtStyle) app.changeGrepPreferences.fontStyle = tgtStyle;
-			app.changeGrepPreferences.changeTo = map[j][1] ? map[j][1] : "";
+			if (map[j][1]) { // don't set target font and style if empty. Otherwise ID will map to itself.
+				if (tgtFont) app.changeGrepPreferences.appliedFont = tgtFont;
+				if (tgtStyle) app.changeGrepPreferences.fontStyle = tgtStyle;
+			}
+			app.changeGrepPreferences.changeTo = map[j][1] ? map[j][1]:"";
       
-			//if (language) app.changeGrepPreferences.appliedLanguage = language; 
+			if (language) app.changeGrepPreferences.appliedLanguage = language; 
 			//app.changeGrepPreferences.composer = "Adobe World-Ready Paragraph Composer";
 			app.activeDocument.changeGrep();
 		} catch(e) {
