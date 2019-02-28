@@ -16,7 +16,7 @@
 setupEssentials(); 
 var mappings = readMappings();
 main(mappings);
-alert(mappings);
+
 function main(mappings) {
 	for (var i = 0; i < mappings.length; i++) 		
 		convert.apply(null, mappings[i]);
@@ -62,10 +62,9 @@ function convert(map, srcFont, srcStyle, tgtFont, tgtStyle, scalingFactor, langu
 			app.findGrepPreferences.fontStyle   = srcStyle ? srcStyle: NothingEnum.NOTHING;
 			app.findGrepPreferences.findWhat    = map[j][0];
 
-      app.changeGrepPreferences.appliedFont = tgtFont ? tgtFont: NothingEnum.NOTHING;
+			app.changeGrepPreferences.appliedFont = tgtFont ? tgtFont: NothingEnum.NOTHING;
 			app.changeGrepPreferences.fontStyle   = tgtStyle ? tgtStyle : NothingEnum.NOTHING;
 			app.changeGrepPreferences.changeTo    = map[j][1] ? map[j][1] : "";
-      
 			app.changeGrepPreferences.appliedLanguage = language ? language : NothingEnum.NOTHING;
 			app.changeGrepPreferences.composer        = "Adobe World-Ready Paragraph Composer";
 			app.activeDocument.changeGrep();
@@ -73,6 +72,7 @@ function convert(map, srcFont, srcStyle, tgtFont, tgtStyle, scalingFactor, langu
 			alert(srcFont + ", " + tgtFont + ", "  + map[j][0] + ", " + map[j][1] + ": " + e.message);
 		}
 	};
+	
 	app.findChangeGrepOptions.includeFootnotes = true;    
 	app.findChangeGrepOptions.includeHiddenLayers = true;    
 	app.findChangeGrepOptions.includeLockedLayersForFind = true;    
