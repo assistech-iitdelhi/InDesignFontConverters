@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+﻿/***********************************************************************
 	Copyright 2019, AssisTech, Indian Institute of Technology, Delhi 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -12,21 +12,22 @@
 
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <https://www.gnu.org/licenses/>. 
-*******************************************************************************/
+************************************************************************/
 setupEssentials(); 
 var mappings = readMappings();
 main(mappings);
+alert(mappings);
 function main(mappings) {
-	//for (var i = 0; i < mappings.length; i++) 		
-	//	convert.apply(null, mappings[i]);
+	for (var i = 0; i < mappings.length; i++) 		
+		convert.apply(null, mappings[i]);
 	convert(read_tsv(app.activeScript.path + "/reorder.tsv"));
 }
 
 function readMappings() {  
-  // read all the font mappings
+  // read the source font name to target font name mappings
   var table = read_tsv(app.activeScript.path + "/fonts.tsv");
 
-  // the above loop just read the name of the file containing byte to unicode mappings. actually load the file here.
+  // read the mapping from glyph code to Unicode
   for (var i = 0; i < table.length; i++) {
     var filename = table[i][0];
     var firstname = filename.split('.')[0];
@@ -55,19 +56,18 @@ function setupEssentials() {
 
 // convert from a source font name/style to target font name/style using the map which is a 2-D array
 function convert(map, srcFont, srcStyle, tgtFont, tgtStyle, scalingFactor, language) {
-  alert(map);
 	function change() {
-		try {
-			//if (srcFont) app.findGrepPreferences.appliedFont = srcFont;      
-			//if (srcStyle) app.findGrepPreferences.fontStyle = srcStyle;
-			app.findGrepPreferences.findWhat = map[j][0];
-			
-      //if (tgtFont) app.changeGrepPreferences.appliedFont = tgtFont;
-			//if (tgtStyle) app.changeGrepPreferences.fontStyle = tgtStyle;
-			app.changeGrepPreferences.changeTo = map[j][1] ? map[j][1] : "";
+		try { // if not specified set to NothingEnum.NOTHING so previous values not used
+			app.findGrepPreferences.appliedFont = srcFont ? srcFont: NothingEnum.NOTHING;      
+			app.findGrepPreferences.fontStyle   = srcStyle ? srcStyle: NothingEnum.NOTHING;
+			app.findGrepPreferences.findWhat    = map[j][0];
+
+      app.changeGrepPreferences.appliedFont = tgtFont ? tgtFont: NothingEnum.NOTHING;
+			app.changeGrepPreferences.fontStyle   = tgtStyle ? tgtStyle : NothingEnum.NOTHING;
+			app.changeGrepPreferences.changeTo    = map[j][1] ? map[j][1] : "";
       
-			//if (language) app.changeGrepPreferences.appliedLanguage = language; 
-			//app.changeGrepPreferences.composer = "Adobe World-Ready Paragraph Composer";
+			app.changeGrepPreferences.appliedLanguage = language ? language : NothingEnum.NOTHING;
+			app.changeGrepPreferences.composer        = "Adobe World-Ready Paragraph Composer";
 			app.activeDocument.changeGrep();
 		} catch(e) {
 			alert(srcFont + ", " + tgtFont + ", "  + map[j][0] + ", " + map[j][1] + ": " + e.message);
