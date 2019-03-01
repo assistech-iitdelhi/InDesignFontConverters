@@ -54,25 +54,24 @@ function setupEssentials() {
 }
 
 // convert from a source font name/style to target font name/style using the map which is a 2-D array
-function convert(map, srcFont, srcStyle, tgtFont, tgtStyle, scalingFactor, language) {
-  
+function convert(map, srcFont, srcStyle, tgtFont, tgtStyle, scalingFactor, language, composer) {
 	function change() {
-		try {
-			
-			app.findGrepPreferences = NothingEnum.NOTHING;
-			app.changeGrepPreferences = NothingEnum.NOTHING;
+		try {			
+			app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
 			if (srcFont) app.findGrepPreferences.appliedFont = srcFont;      
 			if (srcStyle) app.findGrepPreferences.fontStyle = srcStyle;
 			app.findGrepPreferences.findWhat = map[j][0];
 			
-			if (map[j][1]) { // don't set target font and style if empty. Otherwise ID will map to itself.
+			if (map[j][1]) { // don't set target attributes if there is no target. ID will take you back to source
 				if (tgtFont) app.changeGrepPreferences.appliedFont = tgtFont;
 				if (tgtStyle) app.changeGrepPreferences.fontStyle = tgtStyle;
-			}
-			app.changeGrepPreferences.changeTo = map[j][1] ? map[j][1]:"";
-      
-			if (language) app.changeGrepPreferences.appliedLanguage = language; 
-			//app.changeGrepPreferences.composer = "Adobe World-Ready Paragraph Composer";
+				if (language) app.changeGrepPreferences.appliedLanguage = language; 
+				if (composer) app.changeGrepPreferences.composer = composer;
+				app.changeGrepPreferences.changeTo = map[j][1];			
+			} else {
+				app.changeGrepPreferences.changeTo = '';
+			}			
+
 			app.activeDocument.changeGrep();
 		} catch(e) {
 			alert(srcFont + ", " + tgtFont + ", "  + map[j][0] + ", " + map[j][1] + ": " + e.message);
@@ -93,7 +92,7 @@ function read_tsv(filepath) {
 	var ifile = new File(filepath);    
 	ifile.encoding = 'UTF-8';
 	var a = [];
-	if(!ifile.exists)	alert("Could not open " + filepath + " for reading");
+	if(!ifile.exists) alert("Could not open " + filepath + " for reading");
 	
 	ifile.open("r");
 	while (!ifile.eof) {
