@@ -1,4 +1,4 @@
-# Convert non-unicode Devanagari text in InDesign files to Unicode 
+# Convert Non-Unicode Text to Unicode within InDesign
 
 ## USAGE
 0. Optional: Export PageMaker files to InDesign using Kasyan Servetsky's PMDImporter.jsx (Works only in InDesign CS6 or earlier)
@@ -36,15 +36,13 @@ Each file contains mappings from bytecodes to Unicode for a specific font.
 'k	श
 ```
 
-### walkman_chanakya.jsx
+### FontConverter.jsx
 This script loads the fonts.tsv file and applicable mapping files and does the following:-
 ```
 foreach applicable source to target font mapping
     foreach byte sequence to unicode mapping
         find source byte sequence in the applicable source font name and style
         replace with target unicode in the applicable target font name and style
-        change the text language to Hindi
-        change Paragraph Composer to Adobe World Ready
 
 reorder characters such as ि to bring them to their correct positions
 ```
