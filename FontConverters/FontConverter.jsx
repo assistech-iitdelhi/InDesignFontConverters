@@ -55,18 +55,24 @@ function setupEssentials() {
 }
 
 // convert from a source font name/style to target font name/style using the map which is a 2-D array
-function convert(map, srcFont, srcStyle, tgtFont, tgtStyle, scalingFactor, language) {
+function convert(map, srcFont, srcStyle, tgtFont, tgtStyle, scalingFactor, language, composer) {
 	function change() {
-		try { // if not specified set to NothingEnum.NOTHING so previous values not used
-			app.findGrepPreferences.appliedFont = srcFont ? srcFont: NothingEnum.NOTHING;      
-			app.findGrepPreferences.fontStyle   = srcStyle ? srcStyle: NothingEnum.NOTHING;
-			app.findGrepPreferences.findWhat    = map[j][0];
+		try {			
+			app.findGrepPreferences = app.changeGrepPreferences = NothingEnum.NOTHING;
+			if (srcFont) app.findGrepPreferences.appliedFont = srcFont;      
+			if (srcStyle) app.findGrepPreferences.fontStyle = srcStyle;
+			app.findGrepPreferences.findWhat = map[j][0];
+			
+			if (map[j][1]) { // don't set target attributes if there is no target. ID will take you back to source
+				if (tgtFont) app.changeGrepPreferences.appliedFont = tgtFont;
+				if (tgtStyle) app.changeGrepPreferences.fontStyle = tgtStyle;
+				if (language) app.changeGrepPreferences.appliedLanguage = language; 
+				if (composer) app.changeGrepPreferences.composer = composer;
+				app.changeGrepPreferences.changeTo = map[j][1];			
+			} else {
+				app.changeGrepPreferences.changeTo = '';
+			}			
 
-			app.changeGrepPreferences.appliedFont = tgtFont ? tgtFont: NothingEnum.NOTHING;
-			app.changeGrepPreferences.fontStyle   = tgtStyle ? tgtStyle : NothingEnum.NOTHING;
-			app.changeGrepPreferences.changeTo    = map[j][1] ? map[j][1] : "";
-			app.changeGrepPreferences.appliedLanguage = language ? language : NothingEnum.NOTHING;
-			app.changeGrepPreferences.composer        = "Adobe World-Ready Paragraph Composer";
 			app.activeDocument.changeGrep();
 		} catch(e) {
 			alert(srcFont + ", " + tgtFont + ", "  + map[j][0] + ", " + map[j][1] + ": " + e.message);
@@ -88,7 +94,7 @@ function read_tsv(filepath) {
 	var ifile = new File(filepath);    
 	ifile.encoding = 'UTF-8';
 	var a = [];
-	if(!ifile.exists)	alert("Could not open " + filepath + " for reading");
+	if(!ifile.exists) alert("Could not open " + filepath + " for reading");
 	
 	ifile.open("r");
 	while (!ifile.eof) {
