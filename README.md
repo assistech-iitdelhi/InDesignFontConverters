@@ -1,4 +1,5 @@
 # Convert Non-Unicode Text to Unicode within InDesign
+![video demo of conversion in InDesign](https://raw.githubusercontent.com/assistech-iitdelhi/InDesignFontConverters/master/ezgif-4-a1c63bb55597.gif)
 
 ## USAGE
 0. Extract the FontConverters folder from the latest release into the Scripts Panel directory. On Win 7 it is here: <drive>:\Users\<username>\AppData\Roaming\Adobe\InDesign\Version 8.0\en_US\Scripts\Scripts Panel
